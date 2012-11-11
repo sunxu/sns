@@ -1,0 +1,14 @@
+<div class="sidebar" style=" padding-left:4px;">
+	<div class="sideitem_head" style="text-align:left; margin-left:20px;"><h4>ÎÒµÄºÃÓÑ</h4></div>
+    <div class="clear"></div>
+	<#list friendlist as user>
+        <DIV class=avatar style="height:80px; float:left; width:54px; margin:2px;">
+            <A href="javascript:void(0)">
+                <IMG src="${user.avatarURLPath}small.jpg">
+            </A>
+            <p style="font-size:12px; text-align:center; line-height:24px;">${user.realname}</p>
+        </DIV>
+	</#list>
+
+
+</div>

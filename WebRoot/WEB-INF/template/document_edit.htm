@@ -1,0 +1,350 @@
+<#include "header.htm">
+<script language=JavaScript>
+	
+	function newCategory(){//获取接受返回信息层
+		var title=trim(jQuery("#title").attr("value"));
+		if(title==""){
+			parent.Dialog.alert("请填写信息");
+			return false;
+		}
+		jQuery.post(
+			"category.do",
+			{ type: 'document', title: title, action: 'new', rand_value: rand_value},
+			function(json){
+				if(json.status){
+					var documentSortList=$("documentSortList");
+					var temp='<select name="document_sort_list" id="document_sort_list" '
+							+'onchange=document.getElementById("document.cid").value=this.options[selectedIndex].text;>'
+							+'<option value="1">默认分类</option>';
+					jQuery.each(json.categorys, function(index,category){
+						temp += '<option  value="'+category.id+'" >'+category.title+'</option>';
+					});
+					temp += '</select>';
+					documentSortList.innerHTML = temp;
+					document.getElementById('document_sort_list').value=jQuery("option:contains('"+title+"')").attr("value");
+					document.getElementById("document.cid").value=document.getElementById('document_sort_list').value;
+					newCancel();
+				}
+				else{
+					document.getElementById("sort_add_msg").innerHTML="该栏目已存在";
+				}
+			},
+			"json");
+	}
+	
+	function newShow(){
+		document.getElementById('newSort').style.display='';
+		document.getElementById('sortManage').style.display='none';
+	}
+	
+	function newCancel(){
+		document.getElementById("sort_add_msg").innerHTML="";
+		document.getElementById('title').value='';
+		document.getElementById('newSort').style.display='none';
+		document.getElementById('sortManage').style.display='';
+	}
+	
+</script>
+
+<script type="text/javascript" language="javascript" src="lib/jquery-1.5.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/i18n/zh.js"></script>
+<script>
+<#if document.cid == 0>
+	var uploader = new plupload.Uploader({
+		runtimes : 'flash,html5,html4',
+		url : 'lib/plupload/doc_upload_json.jsp;jsessionid=${Session["jsessionid"]}',
+		flash_swf_url : 'lib/plupload/js/plupload.flash.swf',
+		unique_names: true,
+		browse_button : 'pickfiles',
+		max_file_size : '10mb',
+		resize : {width : 320, height : 240, quality : 90},
+		filters : [
+			{title : "所有文件(*.*)", extensions : "doc,docx,ppt,pptx,xls,xlsx,rtf,wps,et,dps,pdf,txt"},
+			{title : "MS Office(*.doc;*.docx;*.ppt;*.pptx;*.xls;*.xlsx;*.rtf)", extensions : "doc,docx,ppt,pptx,xls,xlsx,rtf"},
+			{title : "WPS office(*.wps;*.et;*.dps)", extensions : "wps,et,dps"},
+			{title : "PDF(*.pdf)", extensions : "pdf"},
+			{title : "纯文本(*.txt)", extensions : "txt"}
+		],
+		preinit: {
+			FilesAdded: function(up, files) {
+				if(files.length != '1' ){
+					parent.Dialog.alert("请选择单个文件");
+					return false;
+				}
+				if (files[0].size > 10*1024*1024) {
+					parent.Dialog.alert("请选择小于10M的文件");
+					return false;
+				}
+				up.splice();
+				$('#filelist').empty();
+			},
+			UploadFile: function(up, file) {
+				$('#' + file.id + " b").html("文件上传中…");
+			}
+		},
+		init: {
+			FilesAdded: function(up, files) {
+				$.each(files, function(i, file) {
+					$('#filelist').append(
+						'<div id="' + file.id + '">' +
+						file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>' +
+					'</div>');
+				});
+			},
+			UploadProgress: function(up, file) {
+				$('#' + file.id + " b").html(file.percent + "%");
+			},
+			FileUploaded: function(up, file, info) {
+				var json = jQuery.parseJSON(info.response);
+				if(json.error == 1){
+					ajax_change_message(json.message);
+				}else{
+					$('<input type="hidden" name="document.name" value="' + file.name + '" />')
+						.appendTo('#doc_save');
+					$('<input type="hidden" name="document.file" value="' + json.name + '" />')
+						.appendTo('#doc_save');
+					$('#doc_save').submit();
+					ajax_change_message("文档转换中…");
+				}
+			},
+		}
+	});
+	
+	uploader.init();
+</#if>
+	function CheckForm(){
+		var document_title = document.getElementsByName("document.title").item(0).value;
+		var document_tag = document.getElementsByName("document.tag").item(0).value;
+		var document_intro = document.getElementsByName("document.intro").item(0).value;
+
+		if(document_title==""){
+			parent.Dialog.alert("请填写标题");
+			return false;
+		}
+		if(trim(document_tag)==""){
+			parent.Dialog.alert("请填写标签");
+			return false;
+		}
+		if(trim(document_intro)==""){
+			parent.Dialog.alert("请填写简介");
+			return false;
+		}
+<#if document.cid == 0>
+		if(uploader.files.length==0){
+			parent.Dialog.alert("请选择文件");
+			return false;
+		}
+		$(":button").attr({"disabled":"true"}); 
+		ajax_show_message("文件上传中…");
+		uploader.start();
+<#else>	
+		$('#doc_save').submit();
+</#if>
+		
+		return false;
+	}
+</script>
+<div class="main">
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <div class="create_button"><a href="#" onclick="javascript:window.history.go(-1);return false;">返回上一级</a></div>
+            <h2 class="app_document">编辑</h2>
+            <form action="document_save.do" method="post"  name="doc_save" id="doc_save">
+              <table border="0" cellpadding="2" cellspacing="1" class="form_table">
+                <tr>
+                  <th>标题：</th>
+                  <td colspan="2"><input class="med-text" type="text" autocomplete='off' name="document.title" value="${document.title?default("")}" maxlength="30"></td>
+                </tr>
+                <tr>
+                  <th>分类：</th>
+                  <td colspan="2">
+                    <table border="0">
+                      <tr>
+                        <td><div id=documentSortList>
+                            <select name="document_sort_list" id="document_sort_list" onchange=document.getElementById("document.cid").value=document.getElementById("document_sort_list").value;>
+                              <option value="1">默认分类</option>
+                              <#list categoryList as category>
+                              <option value="${category.id}">${category.title}</option>
+                              </#list>
+                            </select>
+                          </div></td>
+                        <td><input type='hidden' name='document.cid' id='document.cid' value='0' />
+                          <div id=newSort style="display:none">
+                            <input type=text class="small-text" name='title' maxlength="20" id='title' width='5'>
+                            <input type=button class="small-btn" value='保存' onClick="newCategory();">
+                            <input type=button class="small-btn" value='取消' onClick="newCancel();">
+                            <span id='sort_add_msg'></span>
+                          </div>
+                          <span id=sortManage> &nbsp;<a onClick="newShow();return false;" href='javascript:;'>添加分类</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='modules.php?app=document_manager_sort'>文件分类</a> </span></td>
+                      </tr>
+                    </table></td>
+                </tr>
+                <tr>
+                  <th>标签：</th>
+                  <td><input type='text' class='small-text' name='document.tag' value='${document.tag?default("")}' /></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th valign="top">简介：</th>
+                  <td colspan="2" style="line-height:1.5">
+                  <textarea name="document.intro" id="document.intro" class="textarea" style='width:550px;height:100px;_width:550px;'>${document.intro?default("")}</textarea>
+                  </td>
+                </tr> 
+                <tr>
+                  <th colspan="3"></th>
+                </tr> 
+                <#if document.cid == 0>                      
+                <tr>
+                  <th>上传：</th>
+                  <td colspan="2">
+						<div id="filelist">请选择大小小于10M的单个文件</div>
+                  		<input type=button class="regular-btn" value="浏览" id="pickfiles"/>
+                  </td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td colspan="2">
+                        <DIV id=doc_rule>
+                            <H3 class=header>文档上传须知</H3>
+                            <P>请上传大小小于10M的附件</P>
+                            <P>请上传以下格式的文档</P>
+                            <TABLE border=0 cellSpacing=0 cellPadding=0 width=600>
+                                <TR>
+                                    <TD class=r>MS Office文档</TD>
+                                    <TD vAlign=top>
+                                        <SPAN class="icon doc"></SPAN>doc,docx &nbsp;&nbsp; 
+                                        <SPAN class="icon ppt"></SPAN>ppt,pptx &nbsp;&nbsp; 
+                                        <SPAN class="icon xls"></SPAN>xls,xlsx&nbsp;&nbsp; 
+                                        <SPAN class="icon rtf"></SPAN>rtf&nbsp;&nbsp; 
+                                     </TD>
+                                </TR>
+                                <TR>
+                                    <TD class=r>WPS office系列</TD>
+                                    <TD>
+                                        <SPAN class="icon wps"></SPAN>wps &nbsp;&nbsp; 
+                                        <SPAN class="icon et"></SPAN>et &nbsp;&nbsp; 
+                                        <SPAN class="icon dps"></SPAN>dps&nbsp;&nbsp; 
+                                    </TD>
+                                </TR>
+                                <TR>
+                                <TD class=r>PDF</TD>
+                                <TD><SPAN class="icon pdf"></SPAN>pdf</TD>
+                                </TR>
+                                <TR>
+                                <TD class=r>纯文本</TD>
+                                <TD><SPAN class="icon txt"></SPAN>txt</TD>
+                                </TR>
+                            </TABLE>
+                            <P>如涉及侵权内容,您的文档将被移除</P>
+                        </DIV>
+                  </td>
+                </tr>                
+                <#else>
+                <tr>
+                  <th>文件：</th>
+                  <td colspan="2">${document.name}</td>
+                </tr>                
+                </#if>
+                <tr>
+                  <th></th>
+                  <td colspan="2">
+                  	  <input type="hidden" name="document.id"  value='${document.id?default("0")}' />
+                      <input type="hidden" name="document.viewnum"  value='${document.viewnum?default("0")}' />
+                      <input type=button class="regular-btn" value="确定" onClick="javascript:CheckForm();" />
+                      <input type=button class="regular-btn" value="取消" onclick='javascript:window.history.go(-1);return false;' /></td>
+                </tr>
+              </table>
+            </form>
+		</div>
+	</div>
+</div>
+<script language=JavaScript>
+	document.getElementById('document_sort_list').value="${document.cid}"==0?1:"${document.cid}";
+	document.getElementById('document.cid').value=document.getElementById('document_sort_list').value;
+</script>	
+
+<div class="clear"></div>  
+<style type="text/css">
+#doc_rule {
+	PADDING-BOTTOM: 15px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; BACKGROUND: #fff9e3; PADDING-TOP: 15px; text-align:left; width:563px;
+}
+#doc_rule H3 {
+	MARGIN-BOTTOM: 15px; COLOR: #743e04; MARGIN-LEFT: 21px; FONT-SIZE: 14px
+}
+#doc_rule P {
+	MARGIN: 6px 0px 6px 30px; PADDING-LEFT: 10px; BACKGROUND: url(http://img.baidu.com/img/iknow/docshare/icons.gif) no-repeat -200px -121px; FONT-SIZE: 12px; line-height:15px;
+}
+#doc_rule TABLE {
+	MARGIN-TOP: 10px; MARGIN-LEFT: 10px; line-height:16px;
+}
+#doc_rule TD {
+	PADDING-BOTTOM: 4px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 4px
+}
+#doc_rule TD.r {
+	TEXT-ALIGN: right; PADDING-RIGHT: 20px; FONT-SIZE: 12px
+}
+#doc_rule TD .icon {
+	VERTICAL-ALIGN: middle
+}
+#pickfiles{
+	float:right; margin-right:116px; margin-top:3px;
+}
+#filelist{
+	float:left; color:#999999;
+}
+.icon {
+	PADDING-BOTTOM: 2px; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; ZOOM: 1; BACKGROUND: url(http://img.baidu.com/img/iknow/docshare/icons.gif) no-repeat 0px 0px; FONT-SIZE: 12px; CURSOR: default; PADDING-TOP: 2px
+}
+
+.xls {
+	BACKGROUND-POSITION: -105px 1px
+}
+.xlsx {
+	BACKGROUND-POSITION: -105px 1px
+}
+.ppt {
+	BACKGROUND-POSITION: -139px 1px
+}
+.pptx {
+	BACKGROUND-POSITION: -139px 1px
+}
+.doc {
+	BACKGROUND-POSITION: -72px 1px
+}
+.docx {
+	BACKGROUND-POSITION: -72px 1px
+}
+.txt {
+	BACKGROUND-POSITION: -36px 1px
+}
+.pdf {
+	BACKGROUND-POSITION: 0px 1px
+}
+.vsd {
+	BACKGROUND-POSITION: -173px 1px
+}
+.rtf {
+	BACKGROUND-POSITION: -140px -27px
+}
+.pot {
+	BACKGROUND-POSITION: -209px -27px
+}
+.pps {
+	BACKGROUND-POSITION: -209px 1px
+}
+.wps {
+	BACKGROUND-POSITION: -106px -26px
+}
+.et {
+	BACKGROUND-POSITION: -73px -26px
+}
+.dps {
+	BACKGROUND-POSITION: -174px -27px
+}
+.epub {
+	BACKGROUND-POSITION: -42px -142px
+}
+</style> 
+<#include "footer.htm">

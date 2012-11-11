@@ -1,0 +1,114 @@
+
+<table class="form_table" id='sort_table' cellspacing="0">
+    <tr >
+        <td><div id="show_info_4"> <a href='friend.do?cid=1'>默认分组</a> </div></td>
+        <td width="60%">(不支持编辑及删除)</td>
+    </tr>
+    <#if categorylist?? && categorylist?size gt 0>
+    <#list categorylist as category>
+    <tr id="category_${category.id}">
+        <td><div id="show_info_4"> <a href='friend.do?cid=${category.id}'>${category.title}</a> </div></td>
+        <td width="60%"><a  href=javascript:edit_category("category_${category.id}");>编辑</a>&nbsp &nbsp <a href='javascript:void(0)' onclick='delete_category(${category.id});'>删除</a></td>
+    </tr>
+    <tr id="category_${category.id}_edit" style="display:none;">
+        <td><input class="small-text" type='text' id="change_category_${category.id}" value="${category.title}" maxlength="8"></td>
+        <td width="60%"><a href="javascript:void(0);"  onclick=save_category("${category.id}"); >保存</a>&nbsp &nbsp <a href="javascript:void(0);"  onclick=exit_category("category_${category.id}"); >取消</a></td>
+    </tr>
+    </#list>
+    </#if>
+    <tr id="show_add_button">
+        <td colspan="2">
+        <input type='button' class="regular-btn" style='font-size:12px;' value='添加分组' onclick='show_add();' />
+        </td>
+    </tr>
+    <tr style="display:none;" id="add_area">
+        <td>
+        	<input class="small-text" type='text' name='title' id='title' />
+        </td>
+        <td>
+        	<input type='button' value='添加' class='small-btn' onclick="new_category();" />
+        	<input type='button' value='取消' class='small-btn' onclick='exit_add();' />
+      	</td>
+    </tr>
+</table>
+<script type="text/javascript"> 
+function delete_category(id){
+	Dialog.confirm("是否删除?", function(){
+		jQuery.post(
+			"category.do",
+			{ type: 'friend', action: 'delete', id:id, rand_value: rand_value},
+			function(json){
+				if(json.status){
+					Dialog.alert('删除成功');
+					jQuery("#category_"+id+"_edit").remove();
+					jQuery("#category_"+id).remove();
+				}else{
+					Dialog.alert('删除失败');
+				}
+			},
+			"json");	
+		}
+	);	
+}
+
+function save_category(id){
+	var title=document.getElementById("change_category_"+id).value;
+	if(trim(title)==''){
+		parent.Dialog.alert('请填写分组名称');
+	}else{
+		jQuery.post(
+			"category.do",
+			{ type: 'friend', title: title, action: 'edit', id:id, rand_value: rand_value},
+			function(json){
+				if(json.status){
+					Dialog.alert('保存成功',function(){top.location="friend.do?type=category";});
+				}else{
+					Dialog.alert('保存失败');
+				}
+			},
+			"json");
+	}
+}
+ 
+function exit_category(category_id){
+	document.getElementById(category_id).style.display="";
+	document.getElementById(category_id+"_edit").style.display="none";
+}
+ 
+function edit_category(category_id){
+	document.getElementById(category_id).style.display="none";
+	document.getElementById(category_id+"_edit").style.display="";
+}
+ 
+function show_add(){
+	document.getElementById("show_add_button").style.display="none";
+	document.getElementById("add_area").style.display="";
+}
+ 
+function exit_add(){
+	document.getElementById("add_area").style.display="none";
+	document.getElementById("show_add_button").style.display="";
+	document.getElementById("title").value="";
+}
+ 
+function new_category(){
+	var title=document.getElementById("title").value;
+	if(trim(title)==''){
+		parent.Dialog.alert('请填写分组名称');
+	}else{
+		jQuery.post(
+			"category.do",
+			{ type: 'friend', title: title, action: 'new', rand_value: rand_value},
+			function(json){
+				if(json.status){
+					Dialog.alert('保存成功',function(){top.location="friend.do?type=category";});
+				}
+			},
+			"json");
+	}
+}
+ 
+</script>
+<style type="text/css">
+.form_table a{text-decoration:none;}
+</style>

@@ -1,0 +1,129 @@
+<div class="search_friend">
+    <select id="category_id" class="tleft" onChange="javascript:location.href='friend.do?cid='+this.value">
+        <option value='0'>全部</option>
+        <option value='1'>默认分组 </option>
+        <#list categorylist as category>
+        <option value='${category.id}' >${category.title}</option>
+        </#list>
+    </select>
+</div>
+
+<#if friendlist?? && friendlist?size gt 0>
+<div id="panel">
+    <div class="friend_list">
+        <ul class="user_list">
+        <#list friendlist as friend>
+            <li id="fuid_${friend.fuid}" onmouseover='changeStyle(this)' onmouseout='recoverStyle(this)'<#if friend_index%2 == 1> style="float:right" </#if>>
+                <div class="photo">
+                    <a href="space.do?uid=${friend.fuid}" target="_blank" class="avatar">
+                      <img title="进入首页" src="${friend.avatarURLPath}small.jpg" />
+                    </a>
+                </div>
+                <dl>
+                    <dt>${friend.frealname}</dt>
+                    <dd class="category">
+                    <a href="javascript:void(0);" onclick='show_category_list(this,${friend.fuid},${friend.cid})' >
+                    	<span><script type="text/javascript">document.write(jQuery("option[value="+${friend.cid}+"]").text());</script></span>
+                    </a>
+                    </dd>
+                </dl>
+                <div class="tool"> 
+                    <a href='modules.php?app=msg_creator&2id=3&nw=1'>发送小纸条</a>
+                    <a href="javascript:friend_delete(${friend.fuid});">解除好友</a>
+                </div>
+            </li>
+        </#list>
+        </ul>
+    </div>
+</div>
+<div class="pages_bar">
+    <#if cid != 0>
+    <#assign basePageUrl = "friend.do?cid="+cid+"&">
+    <#else>
+    <#assign basePageUrl = "friend.do?">
+    </#if>
+    <a style="background-color:#eee; margin-right:10px; color:#333;">共${pages.tatolCount}项记录</a>
+    <a href="${basePageUrl}">首页</a>
+    <#if pages.hasPre><a href="${basePageUrl}page=${pages.now-1}">${pages.now-1}</a></#if>
+    <a href="javascript:void(0);" class="current_page">${pages.now}</a>
+    <#if pages.hasNext><a href="${basePageUrl}page=${pages.now+1}">${pages.now+1}</a></#if>
+    <a href="${basePageUrl}page=${pages.tatolPage}">尾页</a>  
+</div>
+<div class="clear"></div>
+<#else>
+	<#if cid == 0 >
+    <DIV class="guide_info">您还没有好友,<A href="friend.do?type=search">查找好友</A></DIV>
+    <#else>
+    <DIV class="guide_info">这个分组里还没好友</DIV>
+    </#if>
+</#if>
+<script type="text/javascript"> 
+
+document.getElementById('category_id').value = ${cid};
+
+function friend_delete(fuid){
+	Dialog.confirm("是否删除?", function(){
+		jQuery.post(
+			"friend_ajax.do",
+			{type : 'delete', friendid : fuid, rv: rand_value},
+			function(json){
+				if(json.status){
+					Dialog.alert("删除成功",
+							function(){
+								jQuery("#fuid_"+fuid).remove();
+								if(jQuery(".user_list").children("li").length == 0)
+									top.location="friend.do";										
+							});
+				}else{
+					Dialog.alert("删除失败");
+				}
+			},
+			"json");
+		}
+	);
+}
+
+function show_category_list(obj,fuid,old_cid){
+	var sortwin=document.createElement("div");
+	var parentnode = document.getElementById('panel');
+	var t=obj.offsetTop;
+	var l=obj.offsetLeft;
+	while(obj=obj.offsetParent){
+		t+=obj.offsetTop;
+		l+=obj.offsetLeft;
+	}
+  	sortwin.id = "sort_select_"+fuid;
+	sortwin.className = "sort_select";
+	sortwin.style.top = (t+15) + 'px';
+	sortwin.style.left = l + 'px';
+	sortwin.innerHTML = "<div class='sort_sel_box'><ul>"
+		+"<li><a href='javascript:void(0);' onclick=change_category("+fuid+",1,this,"+old_cid+");>默认分组</a></li>"
+		<#list categorylist as category>
+		+"<li><a href='javascript:void(0);' onclick=change_category("+fuid+",${category.id},this,"+old_cid+");>${category.title}</a></li>"
+        </#list>
+		+"</ul></div>";
+	parentnode.appendChild(sortwin);
+	sortwin.focus();
+		if(document.all){
+		sortwin.onblur=function(){window.setTimeout(function(){parentnode.removeChild(sortwin);},250);}
+	}else{
+		sortwin.onclick=function(){window.setTimeout(function(){parentnode.removeChild(sortwin);},50);}
+	}
+}
+
+function change_category(fuid,cid,obj,old_cid){
+	if(cid != old_cid){
+		jQuery.post(
+			"friend_ajax.do",
+			{type : 'change_category', friendid : fuid, cid:cid, rv: rand_value},
+			function(json){
+				if(json.status){
+					jQuery("#fuid_"+fuid+" .category")[0].innerHTML = '<a href="javascript:void(0);" onclick="show_category_list(this,'
+						+fuid+','+cid+')" ><span>'+jQuery("option[value="+cid+"]").text()+'</span></a>';
+				}
+			},
+			"json");
+	}
+}
+
+</script> 

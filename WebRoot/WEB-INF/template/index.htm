@@ -1,0 +1,73 @@
+<#include "header.htm">
+<div class="main">
+  <div class="snsidea"><a href="modules.php?app=user_reg" hidefocus="true"><img src="skin/default/images/sns_idea1.jpg" width="664" height="314" /></a></div>
+  <div class="login">
+    <h2>会员登录 <span id="loadingmsg"></span></h2>
+    <form name="login_form" method="post" onSubmit="return false;">
+      <p>
+        <label>登录邮箱： <span id="emailmsg" class="red"></span></label>
+        <input class="input" name="login_email" id="login_email" type="text" value="111@111.com" />
+      </p>
+      <p>
+        <label>密码： <span id="pwdmsg" class="red"></span></label>
+        <input class="pwd" name="login_pws" id="login_pws" type="password" value="111111" />
+      </p>
+      <p class="chk">
+        <label for="tmpiId">
+          <input name="tmpiId" class="chk" id="tmpiId" type="checkbox" value="save" checked="checked" >
+          记住我 </label>
+        <label for="hidden">
+          <input name="hidden" class="chk" id="hidden" type="checkbox" value="1">
+          隐身登录 </label>
+      </p>
+      <p><span><a href="modules.php?app=user_forget" class="forget">忘记密码？</a></span>
+        <input type="submit" onClick="login();return false;" class="button"  name="loginsubm" id="loginsubm" hidefocus="true" value="登录">
+      </p>
+    </form>
+  </div>
+</div>
+
+<div class="clear"></div>
+<script type="text/javascript">
+function login(){
+	var login_email = document.getElementsByName('login_email').item(0).value;
+	var login_pws = document.getElementsByName('login_pws').item(0).value;
+	var login_email_reg = /^[0-9a-zA-Z_\-\.]+@[0-9a-zA-Z_\-]+(\.[0-9a-zA-Z_\-]+)*$/;
+	var rand_value=Math.random();
+
+	if(login_email==""){
+		document.getElementById('emailmsg').innerHTML="登录帐号不能为空！";
+		return false;
+	}
+	else if(!login_email.match(login_email_reg)) {
+		document.getElementById('emailmsg').innerHTML = '登录帐号格式不正确';
+		return false;
+	}
+	else		
+		document.getElementById('emailmsg').innerHTML="";
+		
+	if(login_pws==""){
+		document.getElementById('pwdmsg').innerHTML=" 密码不能为空！";
+		return false;
+	}
+	else
+		document.getElementById('pwdmsg').innerHTML="";
+				
+	jQuery.post(
+		"login.do",
+		{ login_email: login_email, login_pws: login_pws,rand_value: rand_value},
+		function(json){
+			if(json.status){window.location.href ="home.do";}
+			else{
+				if(json.emailerrer)	
+					document.getElementById('emailmsg').innerHTML = json.emailerrer;
+				else if(json.pwserrer)	
+					document.getElementById('pwdmsg').innerHTML = json.pwserrer;
+			}
+		},
+		"json");
+	return false;
+}
+
+</script>
+<#include "footer.htm">

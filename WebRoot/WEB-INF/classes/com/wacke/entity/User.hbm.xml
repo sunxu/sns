@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.wacke.entity.User" 
+    table="user"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="user"
+    </meta>
+
+    <id
+        name="uid"
+        type="java.lang.Integer"
+        column="uid"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="identity"
+            type="java.lang.Integer"
+            column="uid"
+            unsaved-value="0"
+
+
+        </meta>
+        <generator class="identity" />
+    </id>
+
+    <property
+        name="realname"
+        type="java.lang.String"
+        column="realname"
+        length="15"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="realname"
+            length="15"
+        </meta>    
+    </property>
+    <property
+        name="password"
+        type="java.lang.String"
+        column="password"
+        length="32"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="password"
+            length="32"
+        </meta>    
+    </property>
+    <property
+        name="email"
+        type="java.lang.String"
+        column="email"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="email"
+            length="45"
+        </meta>    
+    </property>
+    <property
+        name="birthday"
+        type="java.lang.Integer"
+        column="birthday"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="birthday"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="sex"
+        type="java.lang.Byte"
+        column="sex"
+        length="4"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="sex"
+            length="4"
+        </meta>    
+    </property>
+    <property
+        name="viewnum"
+        type="java.lang.Integer"
+        column="viewnum"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="viewnum"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="lastlogintime"
+        type="java.lang.Integer"
+        column="lastlogintime"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="lastlogintime"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="attachmaxsize"
+        type="java.lang.Integer"
+        column="attachmaxsize"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="attachmaxsize"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="hasavatar"
+        type="java.lang.Boolean"
+        column="hasavatar"
+        length="1"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="hasavatar"
+            length="1"
+        </meta>    
+    </property>
+    <property
+        name="experience"
+        type="java.lang.Integer"
+        column="experience"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="experience"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="groupid"
+        type="byte"
+        column="groupid"
+        not-null="true"
+        length="4"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="groupid"
+            length="4"
+            not-null="true"
+        </meta>    
+    </property>
+    <property
+        name="allowedaction"
+        type="java.lang.String"
+        column="allowedaction"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="allowedaction"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="status"
+        type="java.lang.Boolean"
+        column="status"
+        length="1"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="status"
+            length="1"
+        </meta>    
+    </property>
+    <property
+        name="regtime"
+        type="java.lang.Integer"
+        column="regtime"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="regtime"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="birthProvince"
+        type="java.lang.String"
+        column="birth_province"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="birth_province"
+            length="45"
+        </meta>    
+    </property>
+    <property
+        name="birthCity"
+        type="java.lang.String"
+        column="birth_city"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="birth_city"
+            length="45"
+        </meta>    
+    </property>
+    <property
+        name="resideProvince"
+        type="java.lang.String"
+        column="reside_province"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="reside_province"
+            length="45"
+        </meta>    
+    </property>
+    <property
+        name="resideCity"
+        type="java.lang.String"
+        column="reside_city"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="reside_city"
+            length="45"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+
+</class>
+</hibernate-mapping>

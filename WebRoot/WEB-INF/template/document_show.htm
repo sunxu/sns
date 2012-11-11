@@ -1,0 +1,111 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+        
+            <div class="create_button "><a href="document.do?uid=${document.uid}">返回文件列表</a></div>
+            <h2 id="page_title" class="app_document">浏览文件</h2>
+            
+            <#if document??>
+                <dl class="log_list">
+                    <dt>
+                    	<div style="float:left">
+                            <strong>${document.title}</strong><br />
+                            <span>分类：<a href="document.do?cid=${document.cid}&uid=${document.uid}" title="查看同分类的文件">${category.title?default("默认分类")}</a></span><span class="log_list_options">${document.date?string("yyyy-MM-dd HH:mm:ss")}</span>
+                        </div>
+                        <div class="regular-btn" style="float:right;text-align:center; margin-right:0px;">
+                        	<a href='data/document/${document.date?string("yyyyMM")}/${document.file}.pdf' target="_blank" style="text-decoration:none; color:#FFF;">下&nbsp;&nbsp;载</a>
+                        </div>
+                        <div class="clear"></div>                         
+                    </dt>
+                    <dd class="log_list_content">
+					<script type="text/javascript" src="lib/flexpaper/swfobject.js"></script>
+                    <script type="text/javascript" src="lib/flexpaper/flexpaper_flash.js"></script>
+                    <script type="text/javascript"> 
+                        var swfVersionStr = "10.0.0";
+                        var xiSwfUrlStr = "";
+            
+                        var flashvars = { 
+                              SwfFile : escape("data/document/${document.date?string("yyyyMM")}/${document.file}.swf"),
+                              Scale : 0.6, 
+                              ZoomTransition : "easeOut",
+                              ZoomTime : 0.5,
+                              ZoomInterval : 0.1,
+                              FitPageOnLoad : false,
+                              FitWidthOnLoad : true,
+                              PrintEnabled : true,
+                              FullScreenAsMaxWindow : false,
+                              ProgressiveLoading : true,
+                              
+                              PrintToolsVisible : true,
+                              ViewModeToolsVisible : true,
+                              ZoomToolsVisible : true,
+                              FullScreenVisible : true,
+                              NavToolsVisible : true,
+                              CursorToolsVisible : true,
+                              SearchToolsVisible : true,
+                              
+                              localeChain: "zh_CN"
+                              };
+                              
+                        var params = {}
+                        params.quality = "high";
+                        params.bgcolor = "#ffffff";
+                        params.allowscriptaccess = "sameDomain";
+                        params.allowfullscreen = "true";
+                        var attributes = {};
+                        attributes.id = "FlexPaperViewer";
+                        attributes.name = "FlexPaperViewer";
+                        swfobject.embedSWF(
+                            "lib/flexpaper/FlexPaperViewer.swf", "flashContent", 
+                            "780", "850",
+                            swfVersionStr, xiSwfUrlStr, 
+                            flashvars, params, attributes);
+                        swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+                    </script> 
+                    
+                    <div id="flashContent"> 
+                        <p style="text-align:center; color:#F00; font-weight:bold; line-height:40px; font-size:18px"> 
+                            要查看此页面请确保安装的Adobe Flash Player版本不低于
+							<script type="text/javascript">document.write(swfVersionStr);</script>。
+                        </p> 
+                    </div>                    
+                    </dd>
+                    <dd>
+                    	<span>标签：${document.tag}</span>
+                        <#if Session["uid"] == document.uid>
+                        <span class="log_edit_link">
+                            <a href='document_edit.do?id=${document.id}'>编辑</a>
+                        </span>
+                        <span class="log_del_link">
+                            <a href='document_delete.do?id=${document.id}' onclick='return confirm("是否删除?");'>删除</a>
+                        </span>
+                        </#if>
+                    </dd>
+                </dl>
+                <div class="tleft ml20 comment">
+                    <DIV class=stat style="display:none">
+                        <A onclick="load_more_comment('document',${document.id});" href="javascript:void(0)">显示较早之前的评论</A>
+                        <SPAN id=stat_message></SPAN>
+                    </DIV>
+                    <DIV id="document_${document.id}_comment" beginid="0" hasmore=""></DIV>
+                    <div class="reply" id="document_${document.id}">
+                        <img class="figure" src="${avatarPath}small.jpg" />
+                        <textarea type="text" name="reply_txt" maxlength="140" touid="0" lastid="20" id="reply_txt" class="reply_txt" onkeyup="check_article_comment('document_${document.id}',event)" ></textarea>
+                        <input type="button" name="button" id="button" class="button" value="" onclick="submit_article_comment('document_${document.id}');" />
+                        <span id="message" class="message"></span>
+                    </div>
+                    <script type='text/javascript'>
+                    load_comment('document',${document.id});
+                    </script>
+                </div>
+            <#else>
+            <div class="guide_info ">您访问的页面信息不存在 </div>
+            </#if>
+        </div>
+    </div>
+</div>       
+        
+<div class="clear"></div>   
+<#include "footer.htm">

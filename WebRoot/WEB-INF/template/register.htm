@@ -1,0 +1,258 @@
+<#include "header.htm">
+ <div class="reg_container">
+			<ul class="regedit">
+			<h2>快速注册</h2>
+      <form action="javascript:void(0);" id="reg_form" name="reg_form" method="post" onSubmit="return checkForm();">
+      	<input type='hidden' name='invite_code' value='' />
+        <li><label>邮箱：</label></li>
+        <li>
+            <input class="ipt ipt_nomal" name="user_email" id="user_email" />
+            <div id="user_email_message" class="hint highlight"></div>
+        </li>
+        <li class="gray">请输入您常用的邮箱，方便日后找回密码。</li>
+        <li><label>真实姓名：</label></li>
+        <li>
+          <input class="ipt ipt_nomal" name="user_name" autocomplete="off" />
+          <div id="user_name_message" class="hint"></div>
+        </li>
+        <li class="gray">4-16个字符，1个中文等于2个字符，一旦注册成功真实姓名不能修改。</li>
+        <li><label>密码：</label></li>
+        <li>
+          <input class="ipt ipt_nomal" type="password" name="user_password" id="user_password" autocomplete="off" />
+          <div id="user_password_message" class="hint"></div>
+        </li>
+        <li class="gray">由6-20个英文字母、数字或符号组成。 </li>
+        <li><label>重新输入密码：</label></li>
+        <li>
+          <input class="ipt ipt_nomal" type="password" name="user_repassword" id="user_repassword" />
+          <div id="user_repassword_message" class="hint highlight"></div>
+        </li>
+        <li class="gray">重复上面的密码</li> </li>
+        <li><label>您的性别：</label>
+          <input type='radio' value='1' style="vertical-align:middle" name='user_sex' />男          <input type='radio' value='0' style="vertical-align:middle" name='user_sex' checked=checked />女          <div id="user_repassword_message" class="hint highlight"></div>
+        </li>
+        <li class="gray">选择您的性别，一旦注册成功性别不能修改。 </li>
+        <li><label>验证码：</label></li>
+        <li>
+          <input class="ipt ipt_nomal" type="text" style="width:80px; margin-top:-30px;" name="veriCode" id="veriCode" maxlength="5" onkeyup="javascript:if(this.value.length==5){ajax_check(veriCode,'veriCode');}" />
+          <img style=" margin-left:22px; margin-right:20px; width:80px; height:40px;" border="0" src="lib/veriCodes.jsp" id="verCodePic" />
+          <a href="javascript:getVerCode();">看不清？</a>
+          <div id="user_veriCode_message" class="hint highlight"></div>
+				</li>
+        <li class="gray">输入图片中的字符</li>
+        <li>
+        	<input name="" type="checkbox" disabled value="" checked /> <label>接受<a href="javascript:ser_item();">《用户协议》</a></label></li>
+        <li><input class="button" type="submit" value="注册" /></li>
+  		</form>
+			</ul>
+    </div>
+<div class="clear"></div>
+<script type="text/javascript">
+function ser_item(){
+	var diag = new Dialog();
+	diag.Top="50%";
+	diag.Left="50%";
+	diag.Title = "用户协议";
+	diag.InnerHtml= '<div style="text-align:left">${useragreement}</div>';
+	diag.OKEvent = function(){diag.close();};
+	diag.show();
+}
+
+function getVerCode(){
+	document.getElementById("verCodePic").src="lib/veriCodes.jsp?vc="+rand_value;
+}
+
+function ajax_check(obj,type_id){
+	if(type_id=='email'){
+		div_value='user_email_message';
+		suc_str='您的Email帐号可用';
+	}else{
+		div_value='user_veriCode_message';
+		suc_str='验证码填写正确';
+	}
+	jQuery.post(
+		"reg_check.do",
+		{ value: obj.value, type: type_id ,rv: rand_value},
+		function(json){
+			if(json.status){pass_submit(type_id,suc_str);}else{refuse_submit(type_id,json.message);}
+		},
+		"json");
+	
+}
+
+function refuse_submit(type_id,c){
+	if(type_id=='email'){
+		user_email.className = 'ipt ipt_focus'
+		user_email_message.style.color = 'red';
+		user_email_message.innerHTML = c;
+		user_email_status = false;
+	}else{
+		veriCode.className = 'ipt ipt_focus'
+		veriCode_message.style.color = 'red';
+		veriCode_message.innerHTML = c;
+		user_veriCode_status = false;
+	}
+}
+
+function pass_submit(type_id,c){
+	if(type_id=='email'){
+		user_email.className = 'ipt ipt_nomal';
+		user_email_message.style.color = 'green';
+		user_email_message.innerHTML = c;
+		user_email_status = true;
+	}else{
+		veriCode.className = 'ipt ipt_nomal';
+		veriCode_message.style.color = 'green';
+		veriCode_message.innerHTML = c;
+		user_veriCode_status = true;
+	}
+}
+
+// 检测会员用户名
+
+var user_name = document.getElementsByName('user_name')[0];
+var user_name_message = document.getElementById('user_name_message');
+var user_name_status = false;
+var user_name_reg = /^[A-Za-z0-9\u4E00-\u9FA5]*$/;	//用正则表达式/[\u4E00-\u9FA5]/表示中文
+user_name.onmouseover = function(){user_name.className = 'ipt ipt_focus'};
+user_name.onmouseout = function(){user_name.className = 'ipt ipt_nomal'};
+user_name.onblur = function(){
+	var user_name_size=check_code_size(user_name.value);
+	if(user_name.value=='') {
+		user_name.className = 'ipt ipt_focus'
+		user_name_message.style.color = 'red';
+		user_name_message.innerHTML = '* 请填写用户名';
+		user_name_status = false;
+	}else if(user_name_size < 4 || user_name_size > 14) {
+		user_name.className = 'ipt ipt_error';
+		user_name.onmouseout='ipt ipt_error';
+		user_name_message.style.color = 'red';
+		user_name_message.innerHTML = '* 填写的用户名格式不正确';
+		user_name_status = false;
+	} else if(!user_name_reg.test(user_name.value)){
+		user_name.className = 'ipt ipt_error';
+		user_name.onmouseout='ipt ipt_error';
+		user_name_message.style.color = 'red';
+		user_name_message.innerHTML = '*含有系统禁用的特殊字符';
+		user_name_status = false;
+	}else {
+		user_name.className = 'ipt ipt_nomal';
+		user_name_message.style.color = 'green';
+		user_name_message.innerHTML = '恭喜，您的用户名可用';
+		user_name_status = true;
+	}
+};
+ 
+// 检测邮箱
+var user_email = document.getElementsByName('user_email')[0];
+var user_email_message = document.getElementById('user_email_message');
+var user_email_status = false;
+var user_email_reg = /^[0-9a-zA-Z_\-\.]+@[0-9a-zA-Z_\-]+(\.[0-9a-zA-Z_\-]+)*$/;
+user_email.onmouseover = function(){user_email.className = 'ipt ipt_focus'};
+user_email.onmouseout = function(){user_email.className = 'ipt ipt_nomal'};
+user_email.onblur = function(){
+	if(user_email.value=='') {
+		user_email.className = 'ipt ipt_focus'
+		user_email_message.style.color = 'red';
+		user_email_message.innerHTML = '* 请填写Email帐号';
+		user_email_status = false;
+	} else if(!user_email.value.match(user_email_reg)) {
+		user_email.className = 'ipt ipt_error';
+		user_email.onmouseout = 'ipt ipt_error'
+		user_email_message.style.color = 'red';
+		user_email_message.innerHTML = '* 填写的Email帐号格式不正确';
+		user_email_status = false;
+	} else {
+		ajax_check(user_email,'email');
+	}
+};
+ 
+// 检测密码
+var user_password = document.getElementsByName('user_password')[0];
+var user_password_message = document.getElementById('user_password_message');
+var user_password_status = false;
+user_password.onmouseover = function(){user_password.className = 'ipt ipt_focus'};
+user_password.onmouseout = function(){user_password.className = 'ipt ipt_nomal'};
+user_password.onblur = function(){
+	if(user_password.value=='') {
+		user_password.className = 'ipt ipt_focus'
+		user_password_message.style.color = 'red';
+		user_password_message.innerHTML = '* 请填写密码';
+		user_password_status = false;
+	} else if(user_password.value.length<6 || user_password.value.length>16) {
+		user_password.className = 'ipt ipt_error'
+		user_password.onmouseout='ipt ipt_error';
+		user_password_message.style.color = 'red';
+		user_password_message.innerHTML = '* 填写的密码格式不正确';
+		user_password_status = false;
+	} else {
+		user_password.className = 'ipt ipt_nomal';
+		user_password_message.style.color = 'green';
+		user_password_message.innerHTML = '密码格式正确';
+		user_password_status = true;
+	}
+};
+ 
+// 检测确认密码
+var user_repassword = document.getElementsByName('user_repassword')[0];
+var user_repassword_message = document.getElementById('user_repassword_message');
+var user_repassword_status = false;
+user_repassword.onmouseover = function(){user_repassword.className = 'ipt ipt_focus'};
+user_repassword.onmouseout = function(){user_repassword.className = 'ipt ipt_nomal'};
+user_repassword.onblur = function(){
+	if(user_repassword.value=='') {
+		user_repassword.className = 'ipt ipt_focus'
+		user_repassword_message.style.color = 'red';
+		user_repassword_message.innerHTML = '* 请填写确认密码';
+		user_repassword_status = false;
+	} else if(user_repassword.value!=user_password.value) {
+		user_repassword.className = 'ipt ipt_error'
+		user_repassword.onmouseout='ipt ipt_error';
+		user_repassword_message.style.color = 'red';
+		user_repassword_message.innerHTML = '* 两次填写的密码不一致';
+		user_repassword_status = false;
+	} else if(user_repassword.value.length<6 || user_repassword.value.length>16) {
+		user_repassword.className = 'ipt ipt_error'
+		user_repassword.onmouseout='ipt ipt_error';
+		user_repassword_message.style.color = 'red';
+		user_repassword_message.innerHTML = '* 填写的密码格式不正确';
+		user_repassword_status = false;
+	} else {
+		user_repassword.className = 'ipt ipt_nomal'
+		user_repassword_message.style.color = 'green';
+		user_repassword_message.innerHTML = '确认密码格式正确';
+		user_repassword_status = true;
+	}
+};
+ 
+//检测验证码
+	var veriCode = document.getElementsByName('veriCode')[0];
+	var veriCode_message = document.getElementById('user_veriCode_message');
+	veriCode.onmouseover = function(){veriCode.className = 'ipt ipt_focus'};
+	veriCode.onmouseout = function(){veriCode.className = 'ipt ipt_nomal'};
+	veriCode.onblur = function(){
+		if(veriCode.value=='') {
+			veriCode.className = 'ipt ipt_focus'
+			veriCode_message.style.color = 'red';
+			veriCode_message.innerHTML = '* 请填写验证码';
+			user_veriCode_status = false;
+		}else {
+			ajax_check(veriCode,'veriCode');
+		}
+	};
+ 
+function checkForm(){
+	user_name.onblur();
+	user_email.onblur();
+	user_password.onblur();
+	user_repassword.onblur();
+	veriCode.onblur();
+	if(user_name_status && user_email_status && user_password_status && user_repassword_status && user_veriCode_status) {
+		document.getElementsByName("reg_form").item(0).action="registAct.do";
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<#include "footer.htm">

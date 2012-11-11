@@ -1,0 +1,53 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+        
+            <div class="create_button "><a href="blog.do?uid=${blog.uid}">返回日志列表</a></div>
+            <h2 id="page_title" class="app_blog">浏览日志</h2>
+            
+            <#if blog??>
+                <dl class="log_list">
+                    <dt>
+                        <strong>${blog.title}</strong><br />
+                        <span>分类：<a href="blog.do?cid=${blog.cid}&uid=${blog.uid}" title="查看同分类的日志">${category.title?default("默认分类")}</a></span><span class="log_list_options">${blog.date?string("yyyy-MM-dd HH:mm:ss")}</span>
+                </dt>
+                    <dd class="log_list_content">${blog.message}</dd>
+                    <dd>
+                    	<span>标签：${blog.tag}</span>
+                        <#if Session["uid"] == blog.uid>
+                        <span class="log_edit_link">
+                            <a href='blog_edit.do?id=${blog.id}'>编辑</a>
+                        </span>
+                        <span class="log_del_link">
+                            <a href='blog_delete.do?id=${blog.id}' onclick='return confirm("是否删除?");'>删除</a>
+                        </span>
+                        </#if>
+                    </dd>
+                </dl>
+                <div class="tleft ml20 comment">
+                    <DIV class=stat style="display:none">
+                        <A onclick="load_more_comment('blog',${blog.id});" href="javascript:void(0)">显示较早之前的评论</A>
+                        <SPAN id=stat_message></SPAN>
+                    </DIV>
+                    <DIV id="blog_${blog.id}_comment" beginid="0" hasmore=""></DIV>
+                    <div class="reply" id="blog_${blog.id}">
+                        <img class="figure" src="${avatarPath}small.jpg" />
+                        <textarea type="text" name="reply_txt" maxlength="140" touid="0" lastid="20" id="reply_txt" class="reply_txt" onkeyup="check_article_comment('blog_${blog.id}',event)" ></textarea>
+                        <input type="button" name="button" id="button" class="button" value="" onclick="submit_article_comment('blog_${blog.id}');" />
+                        <span id="message" class="message"></span>
+                    </div>
+                    <script type='text/javascript'>
+                    load_comment('blog',${blog.id});
+                    </script>
+                </div>
+            <#else>
+            <div class="guide_info ">您访问的页面信息不存在 </div>
+            </#if>
+        </div>
+    </div>
+</div>       
+        
+<div class="clear"></div>   
+<#include "footer.htm">

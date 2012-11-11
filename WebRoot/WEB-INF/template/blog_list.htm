@@ -1,0 +1,69 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <#if view != "me">
+                <#if user??>
+                	<h2 class="app_blog">${user.realname}的日志</h2>
+                <#else>
+                	<h2 class="app_blog">好友日志</h2>
+                </#if>
+            <#else>
+            <div class="create_button"><a href="blog_edit.do">新建日志</a></div>
+            <h2 class="app_blog">我的日志</h2>
+            </#if>
+            <div class="tabs">
+                <ul class="menu">
+                  <li<#if view == "me"> class="active"</#if>><a href="blog.do" title="我的日志">我的日志</a></li>
+                  <li<#if view == "all" || view == "category"> class="active"</#if>><a href="blog.do?view=all" title="好友日志">好友日志</a></li>
+                </ul>
+            </div>
+                    
+			<#if bloglist?size gt 0>
+                <#list bloglist as blog>
+					<#list categorylist as key>
+                    	<#if key_index == blog_index>
+                            <#assign category=key>
+                        	<#break>
+                        </#if>
+                    </#list>
+                    <dl class="log_list">
+                        <dt>
+                            <strong><a href='blog.do?id=${blog.id}'>${blog.title}</a></strong>
+                                    <br /><span>分类：<a href="blog.do?cid=${blog.cid}&uid=${blog.uid}" title="查看同分类的日志">${category.title?default("默认分类")}</a></span><span>${blog.date?string("yyyy-MM-dd HH:mm:ss")!}</span>
+                        </dt>
+                        <dd class="log_list_content">${blog.intro}</dd>
+                    </dl>                
+                </#list>
+                <div class="pages_bar">
+                    <#assign basePageUrl = "blog.do?view="+view+"&">
+                    <#if cid != 0>
+                    <#assign basePageUrl = basePageUrl+"cid="+cid+"&">
+                    </#if>                
+                    <#if uid != 0>
+                    <#assign basePageUrl = basePageUrl+"uid="+uid+"&">
+                    </#if>                
+                    <a style="background-color:#eee; margin-right:10px; color:#333;">共${pages.tatolCount}项记录</a>
+                    <a href="${basePageUrl}">首页</a>
+                    <#if pages.hasPre><a href="${basePageUrl}page=${pages.now-1}">${pages.now-1}</a></#if>
+                    <a href="javascript:void(0);" class="current_page">${pages.now}</a>
+                    <#if pages.hasNext><a href="${basePageUrl}page=${pages.now+1}">${pages.now+1}</a></#if>
+                    <a href="${basePageUrl}page=${pages.tatolPage}">尾页</a>  
+                </div>
+                <div class="clear"></div>
+            <#else>
+				<#if view == "me">
+                    <div class="clear"></div>
+                    <div class="guide_info">
+                        您还没有添加日志,<a href='blog.do'>创建日志</a>,或者<a href='blog.do?view=all'>浏览好友的日志</a>
+                    </div>
+                <#else>
+                	<div class='guide_info '>对不起，当前没有您可以查看的日志</div>
+                </#if>
+			</#if>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>   
+<#include "footer.htm">

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+
+
+</head>
+
+<body>
+
+<script type="text/javascript" language="javascript" src="lib/jquery-1.5.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/jquery.plupload.queue.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/i18n/zh.js"></script>
+<script>
+
+	$("#flash_uploader").pluploadQueue({
+		// General settings
+		runtimes : 'gears,flash,silverlight,browserplus,html5',
+		url : 'lib/plupload/doc_upload_json.jsp;jsessionid=${Session["jsessionid"]}',
+		flash_swf_url : 'lib/plupload/js/plupload.flash.swf',
+		silverlight_xap_url : 'lib/plupload/js/plupload.silverlight.xap',
+		max_file_size : '10mb',
+		chunk_size : '1mb',
+		unique_names : true,
+		filters : [
+			{title : "Image files", extensions : "jpg,gif,png"},
+			{title : "Zip files", extensions : "zip"}
+		],
+		resize : {width : 480, height : 360, quality : 90},
+		filters : [
+			{title : "图片文件(*.gif;*.jpg；*.jpeg;*.png;*.bmp)", extensions : "gif,jpg,jpeg,png,bmp"}
+		],
+	});
+	
+</script>
+
+
+<div id="flash_uploader">You browser doesn't have Flash installed.</div>
+
+</body>
+</html>

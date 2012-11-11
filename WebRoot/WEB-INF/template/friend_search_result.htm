@@ -1,0 +1,41 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <DIV class=create_button><A href="friend.do?type=search">返回好友查询</A></DIV>
+            <H2 class=app_friend>查找好友</H2>
+
+            <#if userlist?? && userlist?size gt 0>
+            <div class="friend_list">
+              <ul id="tab0_content0" class="user_list">
+                <#list userlist as user>
+                <li onmouseover='changeStyle(this)' onmouseout='recoverStyle(this)'<#if user_index%2 == 1> style="float:right" </#if>>
+                  <div class="photo">
+                      <a href="space.do?uid=${user.uid}" target="_blank" class="avatar">
+                      	<img title="进入首页" src="${user.avatarURLPath}small.jpg" />
+                      </a>
+                  </div>
+                  <dl>
+                    <dt>${user.realname}</dt>
+                    <dd>所在地：宁夏,银川</dd>
+                    <dd>家乡：四川,雅安</dd>
+                  </dl>
+                  <div class="tool"> 
+                      <a href='modules.php?app=msg_creator&2id=3&nw=1'>发送小纸条</a>
+                  	  <span id="operate_${user.uid}"><a href="javascript:friend_request_add(${user.uid});">加为好友</a></span>
+                  </div>
+                </li>            
+                </#list>
+              </ul>
+            </div> 
+            <div class="clear"></div>             
+            <#else>
+                <DIV class="guide_info">没有找到您要查找的用户,<A href="friend.do?type=search">重新搜索</A></DIV>
+            </#if>
+        </div>
+    </div>
+</div>       
+        
+<div class="clear"></div>   
+<#include "footer.htm">

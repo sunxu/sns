@@ -1,0 +1,108 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+        
+            <div class="create_button "><a href="album.do?uid=${album.uid}">返回相册列表</a></div>
+            <h2 id="page_title" class="app_blog">浏览相册</h2>
+            
+            <#if album??>
+                <div class="album_info">
+                    <div class="album_info_content">
+                        <div class="album_title">相册名称：<a href='album.do?id=${album.id}'>${album.title}</a></div>
+                    </div>
+                </div>
+                <#if !albumPic??>
+                <div class="album_holder">
+                	<#list album.picList as pic>
+                    <div class="album_photo_box">
+                        <a href='album.do?id=${album.id}&pid=${pic.id}'>
+                        	<img src="data/${pic.thumbPic}" width="130" />
+                        </a>
+                    </div>
+                    </#list>
+                    <#if album.picList?size lt 1>
+                    <div class="clear"></div>
+                    <div class="guide_info">
+                    您还没有添加相册,点击<a href="album_edit.do">上传图片</a>。
+                    </div>
+                    </#if>
+                </div>
+                <#else>
+                    <div class="photo_showbox">
+                        <div class="photo_view">
+                            <img onmousemove='turnover(this);' src="data/${albumPic.pic}" />
+                        </div>
+                        
+                        <div class="photo_operate">
+                        <#if Session["uid"] == album.uid>
+                            <a href='album.do?id=${album.id}&pid=${albumPic.id}'>设置为相册封面</a>
+                            <a href='album.do?id=${album.id}&pid=${albumPic.id}' onClick="return confirm('您确定要删除吗？');">删除</a>
+                        </#if>
+                        </div>
+                    </div>
+                    <script type='text/javascript'>
+						function getEvent(){
+							if(document.all){
+								return window.event;
+							}
+							func=getEvent.caller;
+							while(func!=null){
+								var arg0=func.arguments[0];
+								if(arg0){
+									if((arg0.constructor==Event || arg0.constructor ==MouseEvent) || (typeof(arg0)=="object" && arg0.preventDefault && arg0.stopPropagation)){
+										return arg0;
+									}
+								}
+								func=func.caller;
+							}
+							return null;
+						}					
+                        function Get_mouse_pos(obj){
+                            var event=getEvent();
+                            if(navigator.appName=='Microsoft Internet Explorer'){
+                                return event.offsetX;
+                            }else if(navigator.appName=='Netscape'){
+                                return event.pageX-obj.offsetLeft;
+                            }
+                        }
+                        function turnover(obj){
+                            var move_x=Get_mouse_pos(obj);
+                            if(move_x >= 300){
+                                obj.style.cursor="URL(skin/default/images/next.cur),auto";
+                                obj.title='下一页';
+                                obj.onclick=function(){location.href="album.do?id=${album.id}&pid=${albumPic.id}&prev_next=next"};
+                            }else{
+                                obj.style.cursor="URL(skin/default/images/pre.cur),auto";
+                                obj.title='上一页';
+                                obj.onclick=function(){location.href="album.do?id=${album.id}&pid=${albumPic.id}&prev_next=prev"};
+                            }
+                        }
+                    </script>
+                    <div class="tleft ml20 comment">
+                        <DIV class=stat style="display:none">
+                            <A onclick="load_more_comment('album',${albumPic.id});" href="javascript:void(0)">显示较早之前的评论</A>
+                            <SPAN id=stat_message></SPAN>
+                        </DIV>
+                        <DIV id="album_${albumPic.id}_comment" beginid="0" hasmore=""></DIV>
+                        <div class="reply" id="album_${albumPic.id}">
+                            <img class="figure" src="${avatarPath}small.jpg" />
+                            <textarea type="text" name="reply_txt" maxlength="140" touid="0" lastid="20" id="reply_txt" class="reply_txt" onkeyup="check_article_comment('album_${albumPic.id}',event)" ></textarea>
+                            <input type="button" name="button" id="button" class="button" value="" onclick="submit_article_comment('album_${albumPic.id}');" />
+                            <span id="message" class="message"></span>
+                        </div>
+                        <script type='text/javascript'>
+                        load_comment('album',${albumPic.id});
+                        </script>
+                    </div>
+                </#if>
+            <#else>
+            <div class="guide_info ">您访问的页面信息不存在 </div>
+            </#if>
+        </div>
+    </div>
+</div>       
+        
+<div class="clear"></div>   
+<#include "footer.htm">

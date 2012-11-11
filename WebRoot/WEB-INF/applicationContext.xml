@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<import resource="classpath:com/wacke/spring/sessionFactory.xml"/>
+	
+	<import resource="classpath:com/wacke/spring/daoBean.xml"/>
+	
+	<import resource="classpath:com/wacke/spring/serviceBean.xml"/>
+	
+	<bean id="index" class="com.wacke.Welcome"></bean>
+
+	<bean id="home" class="com.wacke.Home" scope="prototype">
+		<property name="feedService">
+			<ref bean="feedService"/>
+		</property>	
+		<property name="doingService">
+			<ref bean="doingService"/>
+		</property>	
+		<property name="userService">
+			<ref bean="userService"/>
+		</property>	
+		<property name="friendService">
+			<ref bean="friendService"/>
+		</property>
+	</bean>
+		
+	<bean id="register" class="com.wacke.user.Register" scope="prototype">
+		<property name="configService">
+			<ref bean="configService"/>
+		</property>	
+		<property name="userService">
+			<ref bean="userService"/>
+		</property>	
+	</bean>
+
+	<bean id="loginout" class="com.wacke.user.LogInOut" scope="prototype">
+		<property name="userService">
+			<ref bean="userService"/>
+		</property>	
+	</bean>
+	
+	<bean id="userSetAction" class="com.wacke.user.UserSetAction" scope="prototype">
+		<property name="userService">
+			<ref bean="userService"/>
+		</property>	
+	</bean>
+	
+	<bean id="messageAction" class="com.wacke.message.MessageAction" scope="prototype">
+		<property name="messageService">
+			<ref bean="messageService"/>
+		</property>	
+	</bean>	
+	
+	<bean id="doingAction" class="com.wacke.doing.DoingAction" scope="prototype">
+		<property name="doingService">
+			<ref bean="doingService"/>
+		</property>	
+	</bean>
+	
+	<bean id="blogEditAction" class="com.wacke.blog.BlogEditAction" scope="prototype">
+		<property name="blogService">
+			<ref bean="blogService"/>
+		</property>	
+		<property name="categoryService">
+			<ref bean="categoryService"/>
+		</property>	
+	</bean>
+	
+	<bean id="blogShowAction" class="com.wacke.blog.BlogShowAction" scope="prototype">
+		<property name="blogService">
+			<ref bean="blogService"/>
+		</property>
+		<property name="friendService">
+			<ref bean="friendService"/>
+		</property>
+	</bean>
+	
+	<bean id="categoryAction" class="com.wacke.category.CategoryAction" scope="prototype">
+		<property name="categoryService">
+			<ref bean="categoryService"/>
+		</property>	
+	</bean>		
+
+	<bean id="commentAction" class="com.wacke.comment.CommentAction" scope="prototype">
+		<property name="commentService">
+			<ref bean="commentService"/>
+		</property>	
+	</bean>	
+
+	<bean id="friendAction" class="com.wacke.friend.FriendAction" scope="prototype">
+		<property name="friendService">
+			<ref bean="friendService"/>
+		</property>	
+		<property name="categoryService">
+			<ref bean="categoryService"/>
+		</property>	
+	</bean>	
+
+	<bean id="documentEditAction" class="com.wacke.document.DocumentEditAction" scope="prototype">
+		<property name="documentService">
+			<ref bean="documentService"/>
+		</property>	
+		<property name="categoryService">
+			<ref bean="categoryService"/>
+		</property>	
+	</bean>
+	
+	<bean id="documentShowAction" class="com.wacke.document.DocumentShowAction" scope="prototype">
+		<property name="documentService">
+			<ref bean="documentService"/>
+		</property>
+		<property name="friendService">
+			<ref bean="friendService"/>
+		</property>
+	</bean>
+
+	<bean id="albumEditAction" class="com.wacke.album.AlbumEditAction" scope="prototype">
+		<property name="albumService">
+			<ref bean="albumService"/>
+		</property>	
+		<property name="categoryService">
+			<ref bean="categoryService"/>
+		</property>	
+	</bean>
+	
+	<bean id="albumShowAction" class="com.wacke.album.AlbumShowAction" scope="prototype">
+		<property name="albumService">
+			<ref bean="albumService"/>
+		</property>
+		<property name="friendService">
+			<ref bean="friendService"/>
+		</property>
+	</bean>
+	
+	
+	
+</beans>

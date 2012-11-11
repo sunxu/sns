@@ -1,0 +1,104 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div class="maincontent">
+        <div class="mypanel">
+            <div class="myphoto"><img src="${avatarPath}small.jpg" /></div>
+            <div class="myinfo">
+                <span class="left">
+                    <a class="strong" href="home.do" target="_blank">${user.realname}</a>
+                </span>
+                <span class="stats"> 已有<a href='modules.php?app=guest_more&user_id=3'>${user.viewnum}</a>人次访问，<font color="#ce1221">${user.experience}</font>个积分</span>
+            </div>
+            <div class="sendbox">
+              <textarea type="text" name="mood_txt" maxlength="140" id="mood_txt" ></textarea>
+              <input type="button" name="button" id="button" value="" onclick="submit_new_mood();" />
+              <span id="the_last_mood" class="newmood">${latestDoing.message?default("您在做什么？ ")?html}</span>
+            </div>
+        </div>
+        <!--空间提醒!-->
+         
+        <!--空间提醒!-->
+
+        <DIV style="PADDING-LEFT: 87px" class=tabs></DIV>
+
+        <DIV class=feedcontainer>
+          <UL id=sec_Content>
+          <#list feedlist as feed>
+            <LI>
+              <DIV class=avatar>
+                <A href="javascript:void(0)">
+                    <IMG src="${feed.avatarURLPath}small.jpg">
+                </A>
+              </DIV>
+              <DIV class=details>
+                <#if feed.type == "doing">
+                <H3>${feed.username}更新了状态<SPAN>&nbsp;&nbsp;(${feed.date?string("yyyy-MM-dd HH:mm:ss")!})</SPAN></H3>
+                <DIV class=content>${feed.title}</DIV>
+                </#if>
+                
+                <#if feed.type == "friend">
+                <H3>${feed.title}<SPAN>&nbsp;&nbsp;(${feed.date?string("yyyy-MM-dd HH:mm:ss")!})</SPAN></H3>
+                <DIV class=content>&nbsp;</DIV>
+                </#if>
+         
+                <#if feed.type == "album">
+                <H3>${feed.username}更新了相册<A href="album.do?id=${feed.contentId}" >${feed.title}</A><SPAN>&nbsp;&nbsp;(${feed.date?string("yyyy-MM-dd HH:mm:ss")!})</SPAN></H3>
+                <DIV class=content>${feed.title}</DIV>
+                </#if>
+                
+                <#if feed.type == "document">
+                <H3>${feed.username}发布了文件<A href="document.do?id=${feed.contentId}" >${feed.title}</A><SPAN>&nbsp;&nbsp;(${feed.date?string("yyyy-MM-dd HH:mm:ss")!})</SPAN></H3>
+                <DIV class=content>${feed.message}</DIV>
+                </#if>
+                
+                <#if feed.type == "blog">
+                <H3>${feed.username}发布了日志<A href="blog.do?id=${feed.contentId}" >${feed.title}</A><SPAN>&nbsp;&nbsp;(${feed.date?string("yyyy-MM-dd HH:mm:ss")!})</SPAN></H3>
+                <DIV class=content>${feed.message}</DIV>
+                </#if>        
+              </DIV>
+            </LI>
+          </#list>
+          </UL>
+        </DIV>
+        
+         <div class="clear"></div>
+         <br />
+    </div>
+    <#include "sidebar.htm">
+</div>
+
+<div class="clear"></div>
+<script type='text/javascript'> 
+	jQuery('#mood_txt').keyup(function(event) {
+		$("mood_txt").value = deleteBr($("mood_txt").value);
+		isMaxLen(this);
+		if (event.keyCode == '13') {
+			submit_new_mood();
+		}
+	});
+
+	function submit_new_mood(){
+		var last_mood_div=$("the_last_mood");
+		var doing_text=trim($("mood_txt").value);
+		if(doing_text==''){
+			parent.Dialog.alert("请填写状态内容!");
+		}else{
+			last_mood_div.innerHTML='数据提交中...';
+			jQuery.post(
+				"doing!save.do",
+				{ message: doing_text, rv: rand_value},
+				function(json){
+					if(json.save){
+						last_mood_div.innerHTML=doing_text;
+						$("mood_txt").value="";
+					}else{
+						last_mood_div.innerHTML='';
+						parent.Dialog.alert("状态更新失败!");
+					}
+				},
+				"json");	
+		}
+	}
+</script>
+<#include "footer.htm">

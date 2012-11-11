@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.wacke.entity.Config" 
+    table="config"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="config"
+    </meta>
+
+    <id
+        name="id"
+        type="java.lang.Integer"
+        column="id"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="identity"
+            type="java.lang.Integer"
+            column="id"
+            unsaved-value="0"
+
+
+        </meta>
+        <generator class="identity" />
+    </id>
+
+    <property
+        name="var"
+        type="java.lang.String"
+        column="var"
+        length="30"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="var"
+            length="30"
+        </meta>    
+    </property>
+    <property
+        name="datavalue"
+        type="java.lang.String"
+        column="datavalue"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="datavalue"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="type"
+        type="java.lang.Byte"
+        column="type"
+        length="4"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="type"
+            length="4"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.wacke.entity.Blog" 
+    table="blog"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="blog"
+    </meta>
+
+    <id
+        name="id"
+        type="java.lang.Integer"
+        column="id"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="identity"
+            type="java.lang.Integer"
+            column="id"
+            unsaved-value="0"
+
+
+        </meta>
+        <generator class="identity" />
+    </id>
+
+    <property
+        name="uid"
+        type="int"
+        column="uid"
+        not-null="true"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="uid"
+            length="11"
+            not-null="true"
+        </meta>    
+    </property>
+    <property
+        name="title"
+        type="java.lang.String"
+        column="title"
+        length="80"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="title"
+            length="80"
+        </meta>    
+    </property>
+    <property
+        name="message"
+        type="java.lang.String"
+        column="message"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="message"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="intro"
+        type="java.lang.String"
+        column="intro"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="intro"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="viewnum"
+        type="java.lang.Integer"
+        column="viewnum"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="viewnum"
+            length="11"
+        </meta>    
+    </property>
+    <property
+        name="dateline"
+        type="java.lang.Integer"
+        column="dateline"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="dateline"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="tag"
+        type="java.lang.String"
+        column="tag"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="tag"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="cid"
+        type="int"
+        column="cid"
+        not-null="true"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="cid"
+            length="11"
+            not-null="true"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+
+</class>
+</hibernate-mapping>

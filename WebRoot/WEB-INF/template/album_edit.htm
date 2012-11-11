@@ -1,0 +1,160 @@
+<#include "header.htm">
+<script language=JavaScript>
+
+	function newCategory(){
+		var title=trim(jQuery("#title").attr("value"));
+		if(title==""){
+			parent.Dialog.alert("请填写信息");
+			return false;
+		}
+		jQuery.post(
+			"category.do",
+			{ type: 'album', title: title, action: 'new', rand_value: rand_value},
+			function(json){
+				if(json.status){
+					var albumSortList=document.getElementById("cid").value;
+					var temp='<select name="album_sort_list" id="album_sort_list" '
+							+'onchange=document.getElementById("cid").value=this.options[selectedIndex].text;>';
+					jQuery.each(json.categorys, function(index,category){
+						temp += '<option  value="'+category.id+'" >'+category.title+'</option>';
+					});
+					temp += '</select>';
+					document.getElementById("albumSortList").innerHTML = temp;
+					document.getElementById('album_sort_list').value=jQuery("option:contains('"+title+"')").attr("value");
+					document.getElementById("cid").value=document.getElementById('album_sort_list').value;
+					newCancel();
+				}
+				else{
+					document.getElementById("sort_add_msg").innerHTML="该相册已存在";
+				}
+			},
+			"json");
+	}
+	
+	function newShow(){
+		document.getElementById('newSort').style.display='';
+		document.getElementById('sortManage').style.display='none';
+	}
+	
+	function newCancel(){
+		document.getElementById("sort_add_msg").innerHTML="";
+		document.getElementById('title').value='';
+		document.getElementById('newSort').style.display='none';
+		document.getElementById('sortManage').style.display='';
+	}
+	
+</script>
+<style type="text/css">@import url(lib/plupload/css/plupload.queue.css);</style>
+<style type="text/css">
+#uploader{ width:550px; height:280px;}
+.plupload_header_content{ display:none}
+.plupload_buttons a{ color:#42454a; text-decoration:none}
+.plupload_start{ display:none;}
+</style>
+
+<script type="text/javascript" language="javascript" src="lib/jquery-1.5.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/jquery.plupload.queue.min.js"></script>
+<script type="text/javascript" src="lib/plupload/js/i18n/zh.js"></script>
+<script>
+	$(function() {
+		$("#uploader").pluploadQueue({
+			runtimes : 'flash,html5,html4',
+			url : 'lib/plupload/img_upload_json.jsp;jsessionid=${Session["jsessionid"]}',
+			max_file_size : '10mb',
+			chunk_size : '0mb',
+			unique_names : true,
+			filters : [
+				{title : "图片文件(*.gif;*.jpg；*.jpeg;*.png;*.bmp)", extensions : "gif,jpg,jpeg,png,bmp"}
+			],
+			flash_swf_url : 'lib/plupload/js/plupload.flash.swf'
+		});
+	})
+
+	function CheckForm(){
+		if(document.getElementById('album_sort_list').value == 0){
+			parent.Dialog.alert("选择相册");
+			return false;
+		}
+		$(":button").attr('disabled',"true"); 
+		var uploader = $('#uploader').pluploadQueue();
+		if (uploader.total.uploaded == 0) {
+			if (uploader.files.length > 0) {
+				uploader.bind('FileUploaded', function(up, file, info) {
+					var json = jQuery.parseJSON(info.response);
+					if(json.error == 1){
+						ajax_change_message(json.message);
+					}else{
+						$('<input type="hidden" name="piclist" value="' + json.name + '" />').appendTo('#album_save');
+					}
+					if (uploader.total.uploaded == uploader.files.length)
+					{
+						$(":button").removeAttr("disabled");
+						ajax_show_message("图片处理中…");
+						$('#album_save').submit();
+					}
+				});				
+				uploader.start();
+			} else
+				parent.Dialog.alert("请至少选择一张图片");
+		}
+		return false;
+	}
+</script>
+<div class="main">
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <div class="create_button"><a href="#" onclick="javascript:window.history.go(-1);return false;">返回上一级</a></div>
+            <h2 class="app_album">编辑</h2>
+            <form action="album_save.do" method="post"  name="album_save" id="album_save">
+              <table border="0" cellpadding="2" cellspacing="1" class="form_table">
+                <tr>
+                  <th>选择相册：</th>
+                  <td colspan="2">
+                    <table border="0">
+                      <tr>
+                        <td><div id=albumSortList>
+                            <select name="album_sort_list" id="album_sort_list" onchange=document.getElementById("cid").value=document.getElementById("album_sort_list").value;>
+                              <option value="0">请选择相册</option>
+                              <#list categoryList as category>
+                              <option value="${category.id}">${category.title}</option>
+                              </#list>
+                            </select>
+                          </div></td>
+                        <td><input type='hidden' name='cid' id='cid' value='0' />
+                          <div id=newSort style="display:none">
+                            <input type=text class="small-text" name='title' maxlength="20" id='title' width='5'>
+                            <input type=button class="small-btn" value='保存' onClick="newCategory();">
+                            <input type=button class="small-btn" value='取消' onClick="newCancel();">
+                            <span id='sort_add_msg'></span>
+                          </div>
+                          <span id=sortManage> &nbsp;<a onClick="newShow();return false;" href='javascript:;'>添加分类</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=''>文件分类</a> </span></td>
+                      </tr>
+                    </table></td>
+                </tr>
+                <tr>
+                  <th>上传相片：</th>
+                  <td> (每张不能超过1M,图片类型为 jpg | jpe | png | gif | bmp )</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td colspan="2">
+                  		<div id="uploader"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td colspan="2">
+                      <input type=button class="regular-btn" value="确定" onClick="javascript:CheckForm();" />
+                      <input type=button class="regular-btn" value="取消" onclick='javascript:window.history.go(-1);return false;' /></td>
+                </tr>
+              </table>
+            </form>
+		</div>
+	</div>
+</div>
+<div class="clear"></div>  
+ 
+<#include "footer.htm">

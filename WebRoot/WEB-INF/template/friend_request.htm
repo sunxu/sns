@@ -1,0 +1,68 @@
+<#if friendlist?? && friendlist?size gt 0>
+    <table class="msg_inbox">
+      <#list friendlist as friend>
+        <tr id="fuid_${friend.uid}">
+          <td width="70">
+          <div class="avatar">
+          <a target="_blank" href='space.do?uid=${friend.uid}'><img src='${friend.avatarURLPath}small.jpg' /></a>
+          </div>
+          </td>
+          <td ><a target="_blank" href='space.do?uid=${friend.uid}'>${friend.frealname}</a>请求添加您为好友<br/>
+            <label class="gray">${friend.requesttimeToDate?string("yyyy-MM-dd HH:mm:ss")}</label></td>
+          <td width="80">
+          <input type=button class="regular-btn" value="同意" onclick="friend_add(${friend.uid})">
+          </td>
+          <td width="40">
+          <input type=button class="regular-btn" value="删除" onclick='friend_delete(${friend.uid})'>
+          </td>
+        </tr>
+    </#list>
+</table>
+<script type="text/javascript">
+function friend_add(uid){
+	jQuery.post(
+			  "friend_ajax.do",
+			  {type : 'add', friendid : uid, rv: rand_value},
+			  function(json){
+				  if(json.status){
+					  Dialog.alert("添加成功",
+					  				function(){
+										  jQuery("#fuid_"+uid).remove();
+										  if(jQuery(".msg_inbox").children()[0])
+										  	  top.location="friend.do?type=request";										
+										});
+				  }else{
+					  Dialog.alert("添加失败");
+				  }
+			  },
+			  "json");
+}
+
+function friend_delete(uid){
+	Dialog.confirm("是否删除?", function(){
+		jQuery.post(
+			"friend_ajax.do",
+			{type : 'delete', friendid : uid, rv: rand_value},
+			function(json){
+				if(json.status){
+					  Dialog.alert("删除成功",
+					  				function(){
+										  jQuery("#fuid_"+uid).remove();
+										  if(jQuery(".msg_inbox").children("tr").length == 0)
+										  	  top.location="friend.do?type=request";										
+										});
+				}else{
+					Dialog.alert("删除失败");
+				}
+			},
+			"json");
+		}
+	);
+}
+
+</script>
+<#else>
+<div class='guide_info'>
+	您还没有收到申请,<a href='friend.do?type=search'>查找好友</a>
+</div>
+</#if>

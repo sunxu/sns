@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<package name="package-default" extends="struts-default" abstract="true">
+		<interceptors>
+			<interceptor name="LoginInterceptor" class="com.wacke.interceptor.LoginInterceptor"></interceptor>
+			<interceptor-stack name="LoginStack">
+			 	<interceptor-ref name="LoginInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="LoginStack"/>
+		<global-results>
+			<result name="login">/login.htm</result>
+			<result name="error">/error.htm</result>
+		</global-results>
+	</package>
+
+	<package name="ajax-default" extends="package-default">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+        </result-types>
+        <interceptors>
+            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor"/>
+        </interceptors>
+    </package>
+	
+	<package name="struts" extends="struts-default">
+		<action name="index" class="index">
+			<result name="success">/index.htm</result>
+			<result name="home" type="redirectAction">home</result>
+		</action>
+		<action name="register" class="register">
+			<result name="success">/register.htm</result>
+		</action>
+		<action name="registAct" class="register" method="registAct">
+			<result name="success" type="redirectAction">home</result>
+			<result name="input" type="redirectAction">register</result>
+		</action>
+	</package>
+	
+	<package name="commmon" extends="package-default">
+		<action name="home" class="home">
+			<result name="success">/home.htm</result>
+		</action>
+		<action name="logout" class="loginout" method="logout">
+			<result name="success" type="redirectAction">index</result>
+		</action>	
+	</package>
+	
+	<package name="userset" extends="package-default">
+		<action name="userset" class="userSetAction">
+			<result name="success">/userset.htm</result>
+			<result name="info" type="redirectAction">userset</result>
+			<result name="password">/userset.htm</result>
+			<result name="makeavatar" type="redirect">userset.do?type=makeavatar</result>
+			<result name="showavatar">/ajaxmessage.htm</result>
+		</action>
+	</package>
+
+	<package name="message" extends="package-default">
+		<action name="message" class="messageAction">
+			<result name="success">/message.htm</result>
+		</action>
+	</package>
+		
+	<package name="doing" extends="package-default">
+		<action name="" class="doingAction">
+		
+		</action>
+	</package>
+	
+	<package name="friend" extends="package-default">
+		<action name="friend" class="friendAction">
+			<result >/friend.htm</result>
+		</action>
+		<action name="friend_search" class="friendAction" method="search">
+			<result >/friend_search_result.htm</result>
+		</action>
+	</package>
+	
+	<package name="blog" extends="package-default">
+		<action name="blog" class="blogShowAction">
+			<result name="bloglist">/blog_list.htm</result>
+			<result name="blogshow">/blog_show.htm</result>
+			<result name="redirect" type="redirectAction">
+				<param name="view">${view}</param>
+				<param name="page">${page}</param>
+				<param name="actionName">blog</param>
+			</result>
+		</action>
+		<action name="blog_edit" class="blogEditAction">
+			<result>/blog_edit.htm</result>
+		</action>
+		<action name="blog_save" class="blogEditAction" method="save">
+			<result type="redirectAction">
+				<param name="id">${id}</param>
+				<param name="actionName">blog</param>
+			</result>
+		</action>
+		<action name="blog_delete" class="blogEditAction" method="delete">
+			<result type="redirectAction">
+				<param name="actionName">blog</param>
+			</result>
+		</action>
+	</package>
+
+	<package name="document" extends="package-default">
+		<action name="document" class="documentShowAction">
+			<result name="documentlist">/document_list.htm</result>
+			<result name="documentshow">/document_show.htm</result>
+			<result name="redirect" type="redirectAction">
+				<param name="view">${view}</param>
+				<param name="page">${page}</param>
+				<param name="actionName">document</param>
+			</result>
+		</action>
+		<action name="document_edit" class="documentEditAction">
+			<result>/document_edit.htm</result>
+		</action>
+		<action name="document_save" class="documentEditAction" method="save">
+			<result type="redirectAction">
+				<param name="id">${id}</param>
+				<param name="actionName">document</param>
+			</result>
+		</action>
+		<action name="document_delete" class="documentEditAction" method="delete">
+			<result type="redirectAction">
+				<param name="actionName">document</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="album" extends="package-default">
+		<action name="album" class="albumShowAction">
+			<result name="albumlist">/album_list.htm</result>
+			<result name="albumshow">/album_show.htm</result>
+			<result name="redirect" type="redirectAction">
+				<param name="view">${view}</param>
+				<param name="page">${page}</param>
+				<param name="actionName">album</param>
+			</result>
+		</action>
+		<action name="album_edit" class="albumEditAction">
+			<result>/album_edit.htm</result>
+		</action>
+		<action name="album_save" class="albumEditAction" method="save">
+			<result type="redirectAction">
+				<param name="id">${id}</param>
+				<param name="actionName">album</param>
+			</result>
+		</action>
+		<action name="album_delete" class="albumEditAction" method="delete">
+			<result type="redirectAction">
+				<param name="actionName">album</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="ajax" extends="ajax-default">
+		<action name="saveavatar" class="userSetAction" method="saveAvatar">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>	
+		<action name="doing" class="doingAction" method="save">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="category" class="categoryAction">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="friend_ajax" class="friendAction" method="doAjax">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+	</package>
+		
+	<package name="comment" extends="ajax-default">
+		<action name="comment" class="commentAction">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="comment_save" class="commentAction" method="save">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="comment_delete" class="commentAction" method="delete">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>	
+	</package>
+	
+	<package name="no-login-ajax" extends="json-default">
+		<action name="reg_check" class="register" method="reg_check">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+		<action name="login" class="loginout">
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</action>
+	</package>
+	
+</struts>

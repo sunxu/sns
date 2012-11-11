@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.wacke.entity.Feed" 
+    table="feed"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="feed"
+    </meta>
+
+    <id
+        name="id"
+        type="java.lang.Integer"
+        column="id"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="identity"
+            type="java.lang.Integer"
+            column="id"
+            unsaved-value="0"
+
+
+        </meta>
+        <generator class="identity" />
+    </id>
+
+    <property
+        name="uid"
+        type="java.lang.Integer"
+        column="uid"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="uid"
+            length="11"
+        </meta>    
+    </property>
+    <property
+        name="username"
+        type="java.lang.String"
+        column="username"
+        length="45"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="username"
+            length="45"
+        </meta>    
+    </property>
+    <property
+        name="dateline"
+        type="java.lang.Integer"
+        column="dateline"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="dateline"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="title"
+        type="java.lang.String"
+        column="title"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="title"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="message"
+        type="java.lang.String"
+        column="message"
+        length="65535"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="message"
+            length="65535"
+        </meta>    
+    </property>
+    <property
+        name="type"
+        type="java.lang.String"
+        column="type"
+        length="10"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="type"
+            length="10"
+        </meta>    
+    </property>
+    <property
+        name="contentId"
+        type="java.lang.Integer"
+        column="content_id"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="content_id"
+            length="11"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+
+</class>
+</hibernate-mapping>

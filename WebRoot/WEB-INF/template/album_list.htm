@@ -1,0 +1,66 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <#if view != "me">
+                <#if user??>
+                	<h2 class="app_album">${user.realname}的相册</h2>
+                <#else>
+                	<h2 class="app_album">好友相册</h2>
+                </#if>
+            <#else>
+            <div class="create_button"><a href="album_edit.do">上传图片</a></div>
+            <h2 class="app_album">我的相册</h2>
+            </#if>
+            <div class="tabs">
+                <ul class="menu">
+                  <li<#if view == "me"> class="active"</#if>><a href="album.do" title="我的相册">我的相册</a></li>
+                  <li<#if view == "all" || view == "category"> class="active"</#if>><a href="album.do?view=all" title="好友相册">好友相册</a></li>
+                </ul>
+            </div>
+            <div class="album_holder">
+			<#if albumlist?size gt 0>
+                <#list albumlist as album>
+                    <dl class="list_album">
+                        <dt>
+                            <a href="album.do?id=${album.id}">
+                                <img src="data/${album.image?default("album/nopic.gif")}">
+                            </a>
+                        </dt>
+                        <dd>
+                            <strong>
+                                <a href='album.do?id=${album.id}'>${album.title}</a>
+                            </strong>
+                        </dd>
+                    </dl>
+                </#list>
+                </div>
+                <div class="pages_bar">
+                    <#assign basePageUrl = "album.do?view="+view+"&">
+                    <#if uid != 0>
+                    <#assign basePageUrl = basePageUrl+"uid="+uid+"&">
+                    </#if>                
+                    <a style="background-color:#eee; margin-right:10px; color:#333;">共${pages.tatolCount}项记录</a>
+                    <a href="${basePageUrl}">首页</a>
+                    <#if pages.hasPre><a href="${basePageUrl}page=${pages.now-1}">${pages.now-1}</a></#if>
+                    <a href="javascript:void(0);" class="current_page">${pages.now}</a>
+                    <#if pages.hasNext><a href="${basePageUrl}page=${pages.now+1}">${pages.now+1}</a></#if>
+                    <a href="${basePageUrl}page=${pages.tatolPage}">尾页</a>  
+                </div>
+                <div class="clear"></div>
+            <#else>
+				<#if view == "me">
+                    <div class="clear"></div>
+                    <div class="guide_info">
+                        您还没有添加相册,<a href="album_edit.do">上传图片</a>,或者<a href="album.do?view=all">浏览好友的图片</a>
+                    </div>
+                <#else>
+                	<div class='guide_info '>对不起，当前没有您可以查看的相册</div>
+                </#if>
+			</#if>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>   
+<#include "footer.htm">

@@ -1,0 +1,120 @@
+<#include "header.htm">
+<div class="main"> 
+	<#include "appbar.htm">
+	<div id="mainpart" class="mainpart">
+        <div id="content">
+            <div class="create_button"><a href="message.do?type=create">新建小纸条</a></div>
+            <h2 class="app_msgscrip">小纸条</h2>
+            <div class="tabs">
+                <ul class="menu">
+                    <li <#if type == "inbox" >class="active"</#if>><a href="message.do" title="收件箱" >收件箱</a></li>
+                    <li <#if type == "outbox" >class="active"</#if>><a href="message.do?type=outbox" title="发件箱" >发件箱</a></li>
+                    <li <#if type == "notice" >class="active"</#if>><a href="message.do?type=notice" title="通知" >通知</a></li>
+                </ul>
+            </div>
+            <#if type == "inbox" >
+                <#if messageList?size == 0>
+                    <div class="guide_info">对不起，您的收件箱内没有信息<br /><br /><br /></div>
+                <#else>
+                    <form action='do.php?act=msg_del&t=2' method='post' onsubmit='check_form()'>
+                    <table class="msg_inbox ">
+                            <tr>
+                                <td width="25">
+                                    <input type='hidden' id='state_0' value='0' />
+                                    <input name="attach[]" type="checkbox" value="4" />
+                                </td>
+                                <td width="30"><img title="未阅读" src='skin/default/jooyea/images/mesread_0.gif' /></td>
+                                <td width="70"><div class="avatar"><a target="_blank" href='home.php?h=2'><img src='skin/default/jooyea/images/d_ico_0_small.gif' /></a></div></td>
+                                <td width="135"><a target="_blank" href='home.php?h=2'>111111</a>
+                                <br/><label class="gray">2011-02-19 16:07:44</label></td>
+                                <td><a title='sdgfd' href='modules.php?app=msg_rpshow&id=4&t=0'>sdgfd</a></td>
+                                <td width="20"><a href='do.php?act=msg_del&id=4&t=0' onclick='return confirm("您确定要删除么？");'><img title="删除" src="skin/default/jooyea/images/del.png" /></a></td>
+                            </tr>
+                            <tr>
+                                <td width="25">
+                                    <input type='hidden' id='state_1' value='0' />
+                                    <input name="attach[]" type="checkbox" value="3" />
+                                </td>
+                                <td width="30"><img title="未阅读" src='skin/default/jooyea/images/mesread_0.gif' /></td>
+                                <td width="70"><div class="avatar"><a target="_blank" href='home.php?h=2'><img src='skin/default/jooyea/images/d_ico_0_small.gif' /></a></div></td>
+                                <td width="135"><a target="_blank" href='home.php?h=2'>111111</a>
+                                <br/><label class="gray">2011-02-19 16:07:27</label></td>
+                                <td><a title='sdgdfg' href='modules.php?app=msg_rpshow&id=3&t=0'>sdgdfg</a></td>
+                                <td width="20"><a href='do.php?act=msg_del&id=3&t=0' onclick='return confirm("您确定要删除么？");'><img title="删除" src="skin/default/jooyea/images/del.png" /></a></td>
+                            </tr>
+                            <tr>
+                                <td width="25">
+                                    <input type='hidden' id='state_2' value='0' />
+                                    <input name="attach[]" type="checkbox" value="2" />
+                                </td>
+                                <td width="30"><img title="未阅读" src='skin/default/jooyea/images/mesread_0.gif' /></td>
+                                <td width="70"><div class="avatar"><a target="_blank" href='home.php?h=2'><img src='skin/default/jooyea/images/d_ico_0_small.gif' /></a></div></td>
+                                <td width="135"><a target="_blank" href='home.php?h=2'>111111</a>
+                                <br/><label class="gray">2011-02-19 16:07:13</label></td>
+                                <td><a title='dasdfdf' href='modules.php?app=msg_rpshow&id=2&t=0'>dasdfdf</a></td>
+                                <td width="20"><a href='do.php?act=msg_del&id=2&t=0' onclick='return confirm("您确定要删除么？");'><img title="删除" src="skin/default/jooyea/images/del.png" /></a></td>
+                            </tr>
+                    </table>
+                    
+                    <div class="rs_head">
+                        <span class="right">共有${messageList?size}封</span>
+                        <span>选择：    	
+                            <a href="javascript:select_attach(1);">全部</a> -
+                            <a href="javascript:select_attach(0);">取消</a> -
+                            <a href="javascript:select_item(1);">已读</a> -
+                            <a href="javascript:select_item(0);">未读</a>
+                        </span>
+                        <span><a href="javascript:document.forms[0].onsubmit();">删除</a></span>
+                    </div>
+                    </form>
+                </#if>
+            </#if>
+        </div>
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<script type='text/javascript'> 
+	function check_form(){
+		var mail_array=document.getElementsByName('attach[]');
+		var num=mail_array.length;
+		var check_num=0;
+		for(array_length=0;array_length<num;array_length++){
+			if(mail_array[array_length].checked==true){
+				check_num++;
+			}
+		}
+		if(check_num==0){
+			parent.Dialog.alert('请选择要删除的小纸条');
+		}else{
+			parent.Dialog.confirm('您确定要删除么？',function(){document.forms[0].submit();});
+		}
+	}
+	
+	function select_attach(type_value){
+		var mail_array=document.getElementsByName('attach[]');
+		var num=mail_array.length;
+		is_checked='checked';
+		if(type_value==0){
+			is_checked='';
+		}
+		for(array_length=0;array_length<num;array_length++){
+				mail_array[array_length].checked=is_checked;
+		}
+	}
+	
+	function select_item(type_value){
+		var mail_array=document.getElementsByName('attach[]');
+		var num=mail_array.length;
+		for(array_length=0;array_length<num;array_length++){
+				if(document.getElementById('state_'+array_length).value==type_value){
+					mail_array[array_length].checked='checked';
+				}else{
+					mail_array[array_length].checked='';
+				}
+		}
+	}
+</script>
+
+<#include "footer.htm">

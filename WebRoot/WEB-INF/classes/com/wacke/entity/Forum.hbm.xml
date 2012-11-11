@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.wacke.entity.Forum" 
+    table="forum"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="forum"
+    </meta>
+
+    <id
+        name="id"
+        type="java.lang.Integer"
+        column="id"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="identity"
+            type="java.lang.Integer"
+            column="id"
+            unsaved-value="0"
+
+
+        </meta>
+        <generator class="identity" />
+    </id>
+
+    <property
+        name="cid"
+        type="int"
+        column="cid"
+        not-null="true"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="cid"
+            length="11"
+            not-null="true"
+        </meta>    
+    </property>
+    <property
+        name="userUid"
+        type="int"
+        column="user_uid"
+        not-null="true"
+        length="11"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="user_uid"
+            length="11"
+            not-null="true"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+
+</class>
+</hibernate-mapping>

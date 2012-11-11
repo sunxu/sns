@@ -1,0 +1,85 @@
+<#assign content="text/html; charset=utf-8">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Language" content="zh-cn">
+<meta http-equiv="Content-Type" content="${content}">
+
+<title>${pageInfo.title!}</title>
+<base href='http://localhost:8080/wacke/' />
+<link rel="stylesheet" type="text/css" href="skin/default/css/layout.css">
+<script type="text/javascript" language="javascript" src="lib/jquery-1.5.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict(); 
+var uid = ${Session["uid"]?default("0")};
+</script>
+<script type="text/javascript" language="javascript" src="lib/base.js"></script>
+<script type="text/javascript" language="javascript" src="lib/dialog/zDialog.js"></script>
+<script type="text/javascript" language="javascript" src="lib/dialog/zDrag.js"></script>
+
+</head>
+<body >
+<#assign avatarPath = Session["avatar"]?default("")> 
+
+<div class="head">
+    <h1><a title="" href="index.do"><img alt="" src="skin/default/images/snslogo.gif"></a></h1>
+    <div class="search">
+        <div class="schbox">
+        <form class="search_box" id="top_search" action="friend_search.do" target="_blank" onsubmit="return false;">
+            <input id="top_search_input" maxlength='20' class="inpt" type="text" name='memName' value="输入姓名..." onblur="inputTxt(this,'set');" onfocus="inputTxt(this,'clean');" />
+            <input type="hidden" name="" value=""/>
+            <input class="btn" type="button" value="" onclick="top_search_submit()" />
+        </form>
+        </div>
+        <#if Session["uid"]??>
+        <a href="friend.do?type=search" target="_self">高级搜索</a>
+        <#else>
+        <a href='javascript:Dialog.confirm("登录后才能执行操作,现在登录？",function(){top.location="index.php";});'>高级搜索</a>
+        </#if>
+    </div>
+
+</div>
+<div class="clear"></div>
+<div class="nav">
+<#if Session["uid"]??>
+    <div class="left_nav">
+        <dl>
+            <dt><a href="home.do">首页</a></dt>
+            <dt><a href="blog.do"><span>日志</span></a></dt>
+            <dt><a href="album.do"><span>相册</span></a></dt>
+            <dt><a href="document.do"><span>文件</span></a></dt>
+            <dt><a href="friend.do"><span>朋友圈</span></a></dt>
+            <!--<dt><a href="space.do">我的主页</a></dt>
+            <dt><a href="message.do">小纸条</a></dt>-->
+        </dl>
+    </div>
+    <div class="right_nav">
+        <dl>
+            <dt><a href="space.do">${Session["realname"]}</a></dt>
+
+            <dt><a href="javascript:void(0);" hidefocus="true" onmouseout="setMenuShow(false);" onmouseover="setMenuShow(true);">设置</a>
+            	<div id="set_menu_bridge" style="width:58px;height:13px;display:none;" onmouseover="setMenuShow(true);" onmouseout="setMenuShow(false);">
+                    <ul id="set_menu" onmouseover="setMenuShow(true);" onmouseout="setMenuShow(false);" class="set_menu" style="display:none;">
+                        <li class="user_info"><a href="userset.do">用户信息</a></li>
+                        <li class="user_ico"><a href="userset.do?type=avatar">头像设置</a></li>
+                        <li class="user_pw_change"><a href="userset.do?type=password">修改密码</a></li>
+                    </ul>
+            	</div>
+            </dt>
+            <dt style="background:none"><a href="logout.do" hidefocus="true">退出</a></dt>
+        </dl>
+
+    </div>
+<#else>
+	  <span class="left">
+	    <a href="index.do">首页</a>
+	    <a href="help/help.html">帮助</a>
+		</span>
+	  <span class="right">
+		  <a href="javascript:addBookMark();">加入收藏</a>
+		  <a href="javascript:setMyHomepage('http://localhost/iwebsns/');">设为首页</a>
+		  <a href="register.do">注册</a>
+		  <a href="index.do">请登录</a>
+	  </span>
+</#if>
+</div>

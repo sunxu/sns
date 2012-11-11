@@ -1,0 +1,69 @@
+<#include "header.htm">
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <#if view != "me">
+                <#if user??>
+                	<h2 class="app_document">${user.realname}的文件</h2>
+                <#else>
+                	<h2 class="app_document">好友文件</h2>
+                </#if>
+            <#else>
+            <div class="create_button"><a href="document_edit.do">上传文件</a></div>
+            <h2 class="app_document">我的文件</h2>
+            </#if>
+            <div class="tabs">
+                <ul class="menu">
+                  <li<#if view == "me"> class="active"</#if>><a href="document.do" title="我的文件">我的文件</a></li>
+                  <li<#if view == "all" || view == "category"> class="active"</#if>><a href="document.do?view=all" title="好友文件">好友文件</a></li>
+                </ul>
+            </div>
+                    
+			<#if documentlist?size gt 0>
+                <#list documentlist as document>
+					<#list categorylist as key>
+                    	<#if key_index == document_index>
+                            <#assign category=key>
+                        	<#break>
+                        </#if>
+                    </#list>
+                    <dl class="log_list">
+                        <dt>
+                            <strong><a href='document.do?id=${document.id}'>${document.title}</a></strong>
+                                    <br /><span>分类：<a href="document.do?cid=${document.cid}&uid=${document.uid}" title="查看同分类的文件">${category.title?default("默认分类")}</a></span><span>${document.date?string("yyyy-MM-dd HH:mm:ss")!}</span>
+                        </dt>
+                        <dd class="log_list_content">${document.intro}</dd>
+                    </dl>                
+                </#list>
+                <div class="pages_bar">
+                    <#assign basePageUrl = "document.do?view="+view+"&">
+                    <#if cid != 0>
+                    <#assign basePageUrl = basePageUrl+"cid="+cid+"&">
+                    </#if>                
+                    <#if uid != 0>
+                    <#assign basePageUrl = basePageUrl+"uid="+uid+"&">
+                    </#if>                
+                    <a style="background-color:#eee; margin-right:10px; color:#333;">共${pages.tatolCount}项记录</a>
+                    <a href="${basePageUrl}">首页</a>
+                    <#if pages.hasPre><a href="${basePageUrl}page=${pages.now-1}">${pages.now-1}</a></#if>
+                    <a href="javascript:void(0);" class="current_page">${pages.now}</a>
+                    <#if pages.hasNext><a href="${basePageUrl}page=${pages.now+1}">${pages.now+1}</a></#if>
+                    <a href="${basePageUrl}page=${pages.tatolPage}">尾页</a>  
+                </div>
+                <div class="clear"></div>
+            <#else>
+				<#if view == "me">
+                    <div class="clear"></div>
+                    <div class="guide_info">
+                        您还没有添加文件,<a href='document_edit.do'>创建文件</a>,或者<a href='document.do?view=all'>浏览好友的文件</a>
+                    </div>
+                <#else>
+                	<div class='guide_info '>对不起，当前没有您可以查看的文件</div>
+                </#if>
+			</#if>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>   
+<#include "footer.htm">

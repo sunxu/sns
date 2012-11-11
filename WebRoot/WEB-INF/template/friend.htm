@@ -1,0 +1,33 @@
+<#include "header.htm">
+<script type="text/javascript" language="javascript" src="lib/area.js"></script>
+<div class="main"> 
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <h2 class="app_friend">朋友圈</h2>
+            <div class="tabs">
+              <ul class="menu">
+                <li<#if type == "list"> class="active"</#if>><a href="friend.do" title="好友列表">好友列表</a></li>
+                <li<#if type == "request"> class="active"</#if>><a href="friend.do?type=request" title="好友申请">好友申请</a></li>
+                <li<#if type == "category"> class="active"</#if>><a href="friend.do?type=category" title="分组管理">分组管理</a></li>
+                <li<#if type == "search"> class="active"</#if>><a href="friend.do?type=search" title="查找好友">查找好友</a></li>
+              </ul>
+            </div>
+            <#if type == "list">
+				<#include "friend_list.htm">
+            </#if>
+            <#if type == "request">
+				<#include "friend_request.htm">
+            </#if>
+            <#if type == "category">
+				<#include "friend_category.htm">
+            </#if>
+            <#if type == "search">
+				<#include "friend_search.htm">
+            </#if>
+        </div>
+    </div>
+</div>       
+        
+<div class="clear"></div>   
+<#include "footer.htm">

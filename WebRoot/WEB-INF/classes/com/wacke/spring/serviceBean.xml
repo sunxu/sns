@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	
+	<bean id="configService" class="com.wacke.config.ConfigService">
+		<property name="configDao">
+			<ref bean="configDao"/>
+		</property>
+	</bean>	
+
+	<bean id="userService" class="com.wacke.user.service.UserService">
+		<property name="userDao">
+			<ref bean="userDao"/>
+		</property>
+	</bean>	
+		
+	<bean id="messageService" class="com.wacke.message.service.MessageService">
+		<property name="messageDao">
+			<ref bean="messageDao"/>
+		</property>
+	</bean>			
+		
+	<bean id="feedService" class="com.wacke.feed.service.FeedService">
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>
+	</bean>			
+		
+	<bean id="doingService" class="com.wacke.doing.service.DoingService">
+		<property name="doingDao">
+			<ref bean="doingDao"/>
+		</property>
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>
+	</bean>	
+	
+	<bean id="blogService" class="com.wacke.blog.service.BlogService">
+		<property name="blogDao">
+			<ref bean="blogDao"/>
+		</property>
+		<property name="categoryDao">
+			<ref bean="categoryDao"/>
+		</property>
+		<property name="userDao">
+			<ref bean="userDao"/>
+		</property>
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>
+	</bean>
+			
+	<bean id="friendService" class="com.wacke.friend.service.FriendService">
+		<property name="friendDao">
+			<ref bean="friendDao"/>
+		</property>
+		<property name="categoryDao">
+			<ref bean="categoryDao"/>
+		</property>
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>
+	</bean>	
+			
+	<bean id="categoryService" class="com.wacke.category.service.CategoryService">
+		<property name="categoryDao">
+			<ref bean="categoryDao"/>
+		</property>
+	</bean>
+
+	<bean id="commentService" class="com.wacke.comment.service.CommentService">
+		<property name="commentDao">
+			<ref bean="commentDao"/>
+		</property>
+	</bean>
+	
+	<bean id="documentService" class="com.wacke.document.service.DocumentService">
+		<property name="documentDao">
+			<ref bean="documentDao"/>
+		</property>
+		<property name="categoryDao">
+			<ref bean="categoryDao"/>
+		</property>
+		<property name="userDao">
+			<ref bean="userDao"/>
+		</property>
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>		
+	</bean>
+	
+	<bean id="albumService" class="com.wacke.album.service.AlbumService">
+		<property name="albumPicDao">
+			<ref bean="albumPicDao"/>
+		</property>
+		<property name="categoryDao">
+			<ref bean="categoryDao"/>
+		</property>
+		<property name="userDao">
+			<ref bean="userDao"/>
+		</property>
+		<property name="feedDao">
+			<ref bean="feedDao"/>
+		</property>		
+	</bean>	
+
+</beans>

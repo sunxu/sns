@@ -1,0 +1,21 @@
+<#assign content="text/html; charset=utf-8">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Language" content="zh-cn">
+<meta http-equiv="Content-Type" content="${content}">
+
+<title>请您登录</title>
+<base href='http://localhost:8080/wacke/' />
+<script type="text/javascript" language="javascript" src="lib/dialog/zDialog.js"></script>
+<script type="text/javascript" language="javascript" src="lib/dialog/zDrag.js"></script>
+<style type="text/css">
+body { height:100%;}
+</style>
+</head>
+<body>
+<script type="text/javascript">
+Dialog.alert('请登录后执行该操作！',function(){top.location="index.do";});
+</script>
+</body>
+</body>

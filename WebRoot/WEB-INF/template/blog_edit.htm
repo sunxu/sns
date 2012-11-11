@@ -1,0 +1,178 @@
+<#include "header.htm">
+<script type="text/javascript" charset="utf-8" src="lib/kindeditor/kindeditor.js"></script>
+<script language=JavaScript>
+	KE.show({
+		id : 'message',
+		allowFileManager : false,
+		allowUpload : true,
+		imageUploadJson : 'upload_json.jsp',
+		items : [
+			'source', '|', 'cut', 'copy', 'paste',
+			'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			'superscript', '|', 'link', 'unlink', '-',
+			'title', 'fontname', 'fontsize', '|', 'textcolor', 'bgcolor', 'bold',
+			'italic', 'underline', 'strikethrough', 'removeformat', '|', 'image',
+			'flash', 'media', 'advtable', 'hr', 'emoticons', '|', 'selectall'
+		],
+		resizeMode : 0,
+		width : '562px',
+		height : '450px'
+	});
+	
+	is_submit=0;
+	
+	function newCategory(){//获取接受返回信息层
+		var title=trim(jQuery("#title").attr("value"));
+		if(title==""){
+			parent.Dialog.alert("请填写信息");
+			return false;
+		}
+		jQuery.post(
+			"category.do",
+			{ type: 'blog', title: title, action: 'new', rand_value: rand_value},
+			function(json){
+				if(json.status){
+					var blogSortList=$("blogSortList");
+					var temp='<select name="blog_sort_list" id="blog_sort_list" '
+							+'onchange=document.getElementById("blog.cid").value=this.options[selectedIndex].text;>'
+							+'<option value="1">默认分类</option>';
+					jQuery.each(json.categorys, function(index,category){
+						temp += '<option  value="'+category.id+'" >'+category.title+'</option>';
+					});
+					temp += '</select>';
+					blogSortList.innerHTML = temp;
+					document.getElementById('blog_sort_list').value=jQuery("option:contains('"+title+"')").attr("value");
+					document.getElementById("blog.cid").value=document.getElementById('blog_sort_list').value;
+					newCancel();
+				}
+				else{
+					document.getElementById("sort_add_msg").innerHTML="该栏目已存在";
+				}
+			},
+			"json");
+	}
+	
+	function newShow(){
+		document.getElementById('newSort').style.display='';
+		document.getElementById('sortManage').style.display='none';
+	}
+	
+	function newCancel(){
+		document.getElementById("sort_add_msg").innerHTML="";
+		document.getElementById('title').value='';
+		document.getElementById('newSort').style.display='none';
+		document.getElementById('sortManage').style.display='';
+	}
+	
+	function CheckForm(){
+		var blog_title = document.getElementsByName("blog.title").item(0).value;
+		var blog_message = jQuery(".ke-iframe").contents().find("body").html();
+		blog_message = blog_message.replace(/\r/ig,"").replace(/\n/ig,"").replace(/&nbsp;/ig,"").replace(/<p>/ig,"").replace(/<\/p>/ig,"").replace(/ /ig,"");
+		var blog_tag = document.getElementsByName("blog.tag").item(0).value;
+		var blog_intro = document.getElementsByName("blog.intro").item(0).value;
+
+		if(blog_title==""){
+			parent.Dialog.alert("请填写标题");
+			return false;
+		}
+		if(trim(blog_message)==""){
+			parent.Dialog.alert("请填写内容");
+			return false;
+		}
+		if(trim(blog_tag)==""){
+			parent.Dialog.alert("请填写标签");
+			return false;
+		}
+		if(trim(blog_intro)==""){
+			parent.Dialog.alert("请填写简介");
+			return false;
+		}
+	}
+	
+	window.onbeforeunload = function ()
+	{
+		var newContent = document.getElementById("blog.message").previousSibling.children[0];
+		if(newContent && trim(newContent.innerHTML.toString()) && is_submit==0){
+			return '您填写的内容尚未保存!';
+		}else{
+			return;
+		}
+	}
+</script>
+<div class="main">
+    <#include "appbar.htm">
+    <div id="mainpart" class="mainpart">
+        <div id="content">
+            <div class="create_button"><a href="#" onclick="javascript:window.history.go(-1);return false;">返回上一级</a></div>
+            <h2 class="app_blog">编辑</h2>
+            <form action="blog_save.do" method="post"  name="myform" onSubmit="return CheckForm();">
+              <table border="0" cellpadding="2" cellspacing="1" class="form_table">
+                <tr>
+                  <th>标题：</th>
+                  <td colspan="2"><input class="med-text" type="text" autocomplete='off' name="blog.title" value="${blog.title?default("")}" maxlength="30"></td>
+                </tr>
+                <tr>
+                  <th>分类：</th>
+                  <td colspan="2">
+                    <table border="0">
+                      <tr>
+                        <td><div id=blogSortList>
+                            <select name="blog_sort_list" id="blog_sort_list" onchange=document.getElementById("blog.cid").value=document.getElementById("blog_sort_list").value;>
+                              <option value="1">默认分类</option>
+                              <#list categoryList as category>
+                              <option value="${category.id}">${category.title}</option>
+                              </#list>
+                            </select>
+                          </div></td>
+                        <td><input type='hidden' name='blog.cid' id='blog.cid' value='0' />
+                          <div id=newSort style="display:none">
+                            <input type=text class="small-text" name='title' maxlength="20" id='title' width='5'>
+                            <input type=button class="small-btn" value='保存' onClick="newCategory();">
+                            <input type=button class="small-btn" value='取消' onClick="newCancel();">
+                            <span id='sort_add_msg'></span>
+                          </div>
+                          <span id=sortManage> &nbsp;<a onClick="newShow();return false;" href='javascript:;'>添加分类</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='modules.php?app=blog_manager_sort'>日志分类</a> </span></td>
+                      </tr>
+                    </table></td>
+                </tr>
+                <tr>
+                  <th>标签：</th>
+                  <td><input type='text' class='small-text' name='blog.tag' value='${blog.tag?default("")}' /></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th valign="top">简介：</th>
+                  <td colspan="2" style="line-height:1.5">
+                  <textarea name="blog.intro" id="blog.intro" class="textarea" style='width:550px;height:100px;_width:550px;'>${blog.intro?default("")}</textarea>
+                  </td>
+                </tr> 
+                <tr>
+                  <th colspan="3"></th>
+                </tr>                       
+                <tr>
+                  <th valign="top">内容：</th>
+                  <td colspan="2" style="line-height:1.5">
+                  <textarea name="blog.message" id="message" class="textarea">${blog.editMessage}</textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td colspan="2">
+                  	  <input type="hidden" name="blog.id"  value='${blog.id?default("0")}' />
+                      <input type="hidden" name="blog.viewnum"  value='${blog.viewnum?default("0")}' />
+                      <input type=submit class="regular-btn" value="确定" onClick="javascript:is_submit=1;" />
+                      <input type=button class="regular-btn" value="取消" onclick='javascript:window.history.go(-1);return false;' /></td>
+                </tr>
+              </table>
+            </form>
+		</div>
+	</div>
+</div>
+<script language=JavaScript>
+	document.getElementById('blog_sort_list').value="${blog.cid}"==0?1:"${blog.cid}";
+	document.getElementById('blog.cid').value=document.getElementById('blog_sort_list').value;
+</script>	
+
+<div class="clear"></div>   
+<#include "footer.htm">
